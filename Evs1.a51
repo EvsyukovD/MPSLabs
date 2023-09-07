@@ -1,12 +1,11 @@
-; F(z,y,x,w) == 1 <=> 7-13
-; F(z,y,x,w)=[(z&(^y v ^x)) v ^z&y&x&w]
-
+;F(X3,X2,X1,X0) == 1 <=> 1,4,6,8,9,11,14
 ORG 0000h;
 BASEADDRESS EQU 11h
 RELATIVEADDRESS EQU 04h
-ORG 1000h
+LJMP MAIN
+;ORG 5000h
 MAIN:
-MOV P0, #0FFh
+;MOV P0, #0FFh
 P4 EQU 0C0h
 MOV A,  #01010010b
 MOV DPTR, #8000h
@@ -31,21 +30,21 @@ MOV C, 0 ;C = X0
 CPL C;C = ^X0
 ANL C, 2; C = ^X0 & X2
 ANL C, 1; C = ^X0 & X2 & X1
-MOV 00, C; 00 = ^X0 & X2 & X1 -- 1
+MOV 04, C; 04 = ^X0 & X2 & X1 -- 1
 
 MOV C,3;C = X3
 ORL C,0; C = X3 V X0
 CPL C; C = ^X3 & ^X0
 ANL C, 2; C = ^X3 & ^X0 & X2
-ORL C, 00; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2
-MOV 00, C; 00 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 -- 2
+ORL C, 04; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2
+MOV 04, C; 04 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 -- 2
 
 MOV C, 2;C = X2
 ORL C, 1; C = X2 V X1
 CPL C; C = ^X2 & ^X1
 ANL C, 0; C = ^X2 & ^X1 & X0
-ORL C, 00; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0
-MOV 00, C; 00 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 -- 4
+ORL C, 04; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0
+MOV 04, C; 04 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 -- 4
 
 MOV C, 0; C = X0
 ORL C, 1; C = X0 V X1
@@ -53,7 +52,7 @@ CPL C; C = ^X0 & ^X1
 ORL C, 2; C = X2 V (^X0 & ^X1)
 CPL C; C = ^X2 & (X0 V X1)
 ANL C, 3; C = X3 & ^X2 & (X0 V X1)
-ORL C, 00; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v x1)
+ORL C, 04; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v x1)
 MOV	P4.0,C	;res:=F
 ; zagruzka etalona
 JB 3, SECOND	;esli nabor >7
@@ -78,5 +77,5 @@ CPL C			; it inverted
 MOV P4.1, C		; P4.1 = inverted bit iz tablici
 MOV DPTR,#7FFBh
 MOV A, 00h
-;AJMP MET1;
+AJMP MET1;
 END

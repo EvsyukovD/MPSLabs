@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS1                                                                 09/06/2023 20:43:28 PAGE     1
+A51 MACRO ASSEMBLER  EVS1                                                                 09/07/2023 15:46:15 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -7,91 +7,90 @@ ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE Evs1.a51 SET(SMALL) DEBUG EP
 
 LOC  OBJ            LINE     SOURCE
 
-                       1     ; F(z,y,x,w) == 1 <=> 7-13
-                       2     ; F(z,y,x,w)=[(z&(^y v ^x)) v ^z&y&x&w]
-                       3     
-0000                   4     ORG 0000h;
-  0011                 5     BASEADDRESS EQU 11h
-  0004                 6     RELATIVEADDRESS EQU 04h
-1000                   7     ORG 1000h
-1000                   8     MAIN:
-1000 7580FF            9     MOV P0, #0FFh
-  00C0                10     P4 EQU 0C0h
-1003 7452             11     MOV A,  #01010010b
-1005 908000           12     MOV DPTR, #8000h
-1008 F0               13     MOVX  @DPTR, A          ;0-7 truth table in ex memory
-1009 908001           14     MOV DPTR, #8001h
-100C 744B             15     MOV A,  #01001011b
-100E F0               16     MOVX  @DPTR, A          ;8-15 truth table in ex memory
-100F C2C0             17     CLR P4.0;
-1011 D2C1             18     SETB P4.1;
-1013                  19     MET1:
-1013 907FFB           20     MOV DPTR,#7FFBh ;adres flaga gotovnosti
-1016                  21     gotovnost:              ;check flag gotovnost
-1016 E0               22     MOVX A,@DPTR    ;read flag
-1017 5401             23     ANL A,#01h              ;vibor 0 bita
-1019 60FB             24     JZ gotovnost
-101B 907FFA           25     MOV DPTR,#7FFAh ;adres nomera nabora
-101E E0               26     MOVX A,@DPTR    ;zapis v A nomera nabora
-101F F520             27     MOV 20h, A              ;peremenniye nabora v 0, 1, 2, 3 biti pamyati
-                      28     ; F(x3,x2,x1,x0) = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v x1)
-                      29     ;X3 - 3, X2 - 2, X1 - 1, X0 - 0
-1021 A200             30     MOV C, 0 ;C = X0
-1023 B3               31     CPL C;C = ^X0
-1024 8202             32     ANL C, 2; C = ^X0 & X2
-1026 8201             33     ANL C, 1; C = ^X0 & X2 & X1
-1028 9200             34     MOV 00, C; 00 = ^X0 & X2 & X1 -- 1
-                      35     
-102A A203             36     MOV C,3;C = X3
-102C 7200             37     ORL C,0; C = X3 V X0
-102E B3               38     CPL C; C = ^X3 & ^X0
-102F 8202             39     ANL C, 2; C = ^X3 & ^X0 & X2
-1031 7200             40     ORL C, 00; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2
-1033 9200             41     MOV 00, C; 00 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 -- 2
-                      42     
-1035 A202             43     MOV C, 2;C = X2
-1037 7201             44     ORL C, 1; C = X2 V X1
-1039 B3               45     CPL C; C = ^X2 & ^X1
-103A 8200             46     ANL C, 0; C = ^X2 & ^X1 & X0
-103C 7200             47     ORL C, 00; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0
-103E 9200             48     MOV 00, C; 00 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 -- 4
-                      49     
-1040 A200             50     MOV C, 0; C = X0
-1042 7201             51     ORL C, 1; C = X0 V X1
-1044 B3               52     CPL C; C = ^X0 & ^X1
-1045 7202             53     ORL C, 2; C = X2 V (^X0 & ^X1)
-1047 B3               54     CPL C; C = ^X2 & (X0 V X1)
-1048 8203             55     ANL C, 3; C = X3 & ^X2 & (X0 V X1)
-104A 7200             56     ORL C, 00; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v x1)
-104C 92C0             57     MOV     P4.0,C  ;res:=F
-                      58     ; zagruzka etalona
-A51 MACRO ASSEMBLER  EVS1                                                                 09/06/2023 20:43:28 PAGE     2
+                       1     ;F(X3,X2,X1,X0) == 1 <=> 1,4,6,8,9,11,14
+0000                   2     ORG 0000h;
+  0011                 3     BASEADDRESS EQU 11h
+  0004                 4     RELATIVEADDRESS EQU 04h
+0000 020003            5     LJMP MAIN
+                       6     ;ORG 5000h
+0003                   7     MAIN:
+                       8     ;MOV P0, #0FFh
+  00C0                 9     P4 EQU 0C0h
+0003 7452             10     MOV A,  #01010010b
+0005 908000           11     MOV DPTR, #8000h
+0008 F0               12     MOVX  @DPTR, A          ;0-7 truth table in ex memory
+0009 908001           13     MOV DPTR, #8001h
+000C 744B             14     MOV A,  #01001011b
+000E F0               15     MOVX  @DPTR, A          ;8-15 truth table in ex memory
+000F C2C0             16     CLR P4.0;
+0011 D2C1             17     SETB P4.1;
+0013                  18     MET1:
+0013 907FFB           19     MOV DPTR,#7FFBh ;adres flaga gotovnosti
+0016                  20     gotovnost:              ;check flag gotovnost
+0016 E0               21     MOVX A,@DPTR    ;read flag
+0017 5401             22     ANL A,#01h              ;vibor 0 bita
+0019 60FB             23     JZ gotovnost
+001B 907FFA           24     MOV DPTR,#7FFAh ;adres nomera nabora
+001E E0               25     MOVX A,@DPTR    ;zapis v A nomera nabora
+001F F520             26     MOV 20h, A              ;peremenniye nabora v 0, 1, 2, 3 biti pamyati
+                      27     ; F(x3,x2,x1,x0) = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v x1)
+                      28     ;X3 - 3, X2 - 2, X1 - 1, X0 - 0
+0021 A200             29     MOV C, 0 ;C = X0
+0023 B3               30     CPL C;C = ^X0
+0024 8202             31     ANL C, 2; C = ^X0 & X2
+0026 8201             32     ANL C, 1; C = ^X0 & X2 & X1
+0028 9204             33     MOV 04, C; 04 = ^X0 & X2 & X1 -- 1
+                      34     
+002A A203             35     MOV C,3;C = X3
+002C 7200             36     ORL C,0; C = X3 V X0
+002E B3               37     CPL C; C = ^X3 & ^X0
+002F 8202             38     ANL C, 2; C = ^X3 & ^X0 & X2
+0031 7204             39     ORL C, 04; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2
+0033 9204             40     MOV 04, C; 04 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 -- 2
+                      41     
+0035 A202             42     MOV C, 2;C = X2
+0037 7201             43     ORL C, 1; C = X2 V X1
+0039 B3               44     CPL C; C = ^X2 & ^X1
+003A 8200             45     ANL C, 0; C = ^X2 & ^X1 & X0
+003C 7204             46     ORL C, 04; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0
+003E 9204             47     MOV 04, C; 04 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 -- 4
+                      48     
+0040 A200             49     MOV C, 0; C = X0
+0042 7201             50     ORL C, 1; C = X0 V X1
+0044 B3               51     CPL C; C = ^X0 & ^X1
+0045 7202             52     ORL C, 2; C = X2 V (^X0 & ^X1)
+0047 B3               53     CPL C; C = ^X2 & (X0 V X1)
+0048 8203             54     ANL C, 3; C = X3 & ^X2 & (X0 V X1)
+004A 7204             55     ORL C, 04; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v x1)
+004C 92C0             56     MOV     P4.0,C  ;res:=F
+                      57     ; zagruzka etalona
+004E 200305           58     JB 3, SECOND    ;esli nabor >7
+A51 MACRO ASSEMBLER  EVS1                                                                 09/07/2023 15:46:15 PAGE     2
 
-104E 200305           59     JB 3, SECOND    ;esli nabor >7
-1051 908000           60     MOV DPTR, #8000h; 
-1054 0159             61     AJMP NEXT;
-1056                  62     SECOND:
-1056 908001           63     MOV DPTR, #8001h; 
-1059                  64     NEXT:
-1059 E0               65     MOVX A, @DPTR   ; A = half of truth table
-105A 8520F0           66     MOV B, 20h;
-105D 53F007           67     ANL B, #00000111b; zapis v B 3 mladshih bita;
-1060 C5F0             68     XCH A, B                ; A = schetchik
-1062 6006             69     JZ END_OF_CYCLE ; if count = 0
-1064 C5F0             70     XCH A, B                ; A = half of truth table, B = count
-1066                  71     cycle:
-1066 03               72     RR A;
-1067 D5F0FC           73     DJNZ B, cycle;
-106A                  74     END_OF_CYCLE:
-106A F5F0             75     MOV B, A;
-106C A2F0             76     MOV C, B.0              ;bit iz tablici
-106E B3               77     CPL C                   ; it inverted
-106F 92C1             78     MOV P4.1, C             ; P4.1 = inverted bit iz tablici
-1071 907FFB           79     MOV DPTR,#7FFBh
-1074 E500             80     MOV A, 00h
-                      81     ;AJMP MET1;
-                      82     END
-A51 MACRO ASSEMBLER  EVS1                                                                 09/06/2023 20:43:28 PAGE     3
+0051 908000           59     MOV DPTR, #8000h; 
+0054 0159             60     AJMP NEXT;
+0056                  61     SECOND:
+0056 908001           62     MOV DPTR, #8001h; 
+0059                  63     NEXT:
+0059 E0               64     MOVX A, @DPTR   ; A = half of truth table
+005A 8520F0           65     MOV B, 20h;
+005D 53F007           66     ANL B, #00000111b; zapis v B 3 mladshih bita;
+0060 C5F0             67     XCH A, B                ; A = schetchik
+0062 6006             68     JZ END_OF_CYCLE ; if count = 0
+0064 C5F0             69     XCH A, B                ; A = half of truth table, B = count
+0066                  70     cycle:
+0066 03               71     RR A;
+0067 D5F0FC           72     DJNZ B, cycle;
+006A                  73     END_OF_CYCLE:
+006A F5F0             74     MOV B, A;
+006C A2F0             75     MOV C, B.0              ;bit iz tablici
+006E B3               76     CPL C                   ; it inverted
+006F 92C1             77     MOV P4.1, C             ; P4.1 = inverted bit iz tablici
+0071 907FFB           78     MOV DPTR,#7FFBh
+0074 E500             79     MOV A, 00h
+0076 0113             80     AJMP MET1;
+                      81     END
+A51 MACRO ASSEMBLER  EVS1                                                                 09/07/2023 15:46:15 PAGE     3
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -101,16 +100,15 @@ N A M E             T Y P E  V A L U E   ATTRIBUTES
 
 B. . . . . . . . .  D ADDR   00F0H   A   
 BASEADDRESS. . . .  N NUMB   0011H   A   
-CYCLE. . . . . . .  C ADDR   1066H   A   
-END_OF_CYCLE . . .  C ADDR   106AH   A   
-GOTOVNOST. . . . .  C ADDR   1016H   A   
-MAIN . . . . . . .  C ADDR   1000H   A   
-MET1 . . . . . . .  C ADDR   1013H   A   
-NEXT . . . . . . .  C ADDR   1059H   A   
-P0 . . . . . . . .  D ADDR   0080H   A   
+CYCLE. . . . . . .  C ADDR   0066H   A   
+END_OF_CYCLE . . .  C ADDR   006AH   A   
+GOTOVNOST. . . . .  C ADDR   0016H   A   
+MAIN . . . . . . .  C ADDR   0003H   A   
+MET1 . . . . . . .  C ADDR   0013H   A   
+NEXT . . . . . . .  C ADDR   0059H   A   
 P4 . . . . . . . .  N NUMB   00C0H   A   
 RELATIVEADDRESS. .  N NUMB   0004H   A   
-SECOND . . . . . .  C ADDR   1056H   A   
+SECOND . . . . . .  C ADDR   0056H   A   
 
 
 REGISTER BANK(S) USED: 0 
