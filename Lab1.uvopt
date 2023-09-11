@@ -133,16 +133,16 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDP51</Key>
-          <Name>(98=-1,-1,-1,-1,0)(82=927,108,1125,213,0)(83=1196,100,1394,205,0)(84=1220,207,1418,312,0)(85=758,341,956,446,0)(5009=881,148,1079,253,1)(5010=-1,-1,-1,-1,0)(80=150,121,344,324,0)(91=-1,-1,-1,-1,0)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=-1,-1,-1,-1,0)</Name>
+          <Name>(98=-1,-1,-1,-1,0)(82=927,108,1125,213,0)(83=1196,100,1394,205,0)(84=1109,152,1307,257,1)(85=758,341,956,446,0)(5009=881,148,1079,253,1)(5010=-1,-1,-1,-1,0)(80=150,121,344,324,0)(91=-1,-1,-1,-1,0)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=-1,-1,-1,-1,0)(5012=-1,-1,-1,-1,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=-1,-1,-1,-1,0)(102=-1,-1,-1,-1,0)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>93</LineNumber>
+          <LineNumber>109</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777096</Address>
+          <Address>-16777072</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -156,9 +156,9 @@
         <Bp>
           <Number>1</Number>
           <Type>0</Type>
-          <LineNumber>88</LineNumber>
+          <LineNumber>108</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777100</Address>
+          <Address>-16777073</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -172,9 +172,9 @@
         <Bp>
           <Number>2</Number>
           <Type>0</Type>
-          <LineNumber>87</LineNumber>
+          <LineNumber>107</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777101</Address>
+          <Address>-16777075</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -188,9 +188,9 @@
         <Bp>
           <Number>3</Number>
           <Type>0</Type>
-          <LineNumber>86</LineNumber>
+          <LineNumber>30</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777102</Address>
+          <Address>-16777178</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -204,9 +204,9 @@
         <Bp>
           <Number>4</Number>
           <Type>0</Type>
-          <LineNumber>85</LineNumber>
+          <LineNumber>29</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777103</Address>
+          <Address>-16777179</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -220,9 +220,9 @@
         <Bp>
           <Number>5</Number>
           <Type>0</Type>
-          <LineNumber>84</LineNumber>
+          <LineNumber>27</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777106</Address>
+          <Address>-16777182</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -236,9 +236,9 @@
         <Bp>
           <Number>6</Number>
           <Type>0</Type>
-          <LineNumber>82</LineNumber>
+          <LineNumber>25</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777108</Address>
+          <Address>-16777184</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -252,9 +252,9 @@
         <Bp>
           <Number>7</Number>
           <Type>0</Type>
-          <LineNumber>80</LineNumber>
+          <LineNumber>22</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777111</Address>
+          <Address>-16777190</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -268,9 +268,9 @@
         <Bp>
           <Number>8</Number>
           <Type>0</Type>
-          <LineNumber>79</LineNumber>
+          <LineNumber>16</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777114</Address>
+          <Address>-16777199</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -284,9 +284,9 @@
         <Bp>
           <Number>9</Number>
           <Type>0</Type>
-          <LineNumber>75</LineNumber>
+          <LineNumber>15</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777115</Address>
+          <Address>-16777201</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -300,9 +300,9 @@
         <Bp>
           <Number>10</Number>
           <Type>0</Type>
-          <LineNumber>74</LineNumber>
+          <LineNumber>14</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777116</Address>
+          <Address>-16777204</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -316,9 +316,9 @@
         <Bp>
           <Number>11</Number>
           <Type>0</Type>
-          <LineNumber>73</LineNumber>
+          <LineNumber>12</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777117</Address>
+          <Address>-16777207</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -332,9 +332,9 @@
         <Bp>
           <Number>12</Number>
           <Type>0</Type>
-          <LineNumber>72</LineNumber>
+          <LineNumber>11</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777118</Address>
+          <Address>-16777210</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -348,71 +348,7 @@
         <Bp>
           <Number>13</Number>
           <Type>0</Type>
-          <LineNumber>71</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16777119</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>Evs1.a51</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>14</Number>
-          <Type>0</Type>
-          <LineNumber>70</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16777122</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>Evs1.a51</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>15</Number>
-          <Type>0</Type>
-          <LineNumber>69</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16777125</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>Evs1.a51</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>16</Number>
-          <Type>0</Type>
-          <LineNumber>68</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>0</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>0</BreakIfRCount>
-          <Filename>C:\Users\devsy\Desktop\mps_labs\Evs1.a51</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>17</Number>
-          <Type>0</Type>
-          <LineNumber>76</LineNumber>
+          <LineNumber>9</LineNumber>
           <EnabledFlag>1</EnabledFlag>
           <Address>0</Address>
           <ByteObject>0</ByteObject>
@@ -451,14 +387,14 @@
         <Mm>
           <WinNumber>3</WinNumber>
           <SubType>0</SubType>
-          <ItemText>X:8000h</ItemText>
+          <ItemText>D:0000h</ItemText>
         </Mm>
       </MemoryWindow3>
       <MemoryWindow4>
         <Mm>
           <WinNumber>4</WinNumber>
           <SubType>0</SubType>
-          <ItemText>X:0004h</ItemText>
+          <ItemText>X:8000h</ItemText>
         </Mm>
       </MemoryWindow4>
       <Tracepoint>
