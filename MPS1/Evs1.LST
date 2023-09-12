@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS1                                                                 09/12/2023 15:14:04 PAGE     1
+A51 MACRO ASSEMBLER  EVS1                                                                 09/12/2023 15:41:00 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -16,113 +16,107 @@ LOC  OBJ            LINE     SOURCE
 0003                   7     MAIN:
                        8     ;MOV P0, #0FFh
   00C0                 9     P4 EQU 0C0h
-0003 75A000           10     MOV P2,#00h
-0006 908000           11     MOV DPTR, #8000h
-0009 7404             12     MOV A,#04h ;0004h - relative address OFFSET
-000B F0               13     MOVX @DPTR, A 
-000C 908004           14     MOV DPTR,#8004h
-000F 7411             15     MOV A, #11h; 0011h - base address OFFSET
-0011 F0               16     MOVX @DPTR, A
-0012 7452             17     MOV A,  #01010010b
-0014 908011           18     MOV DPTR, #8011h
-0017 F0               19     MOVX  @DPTR, A          ;0-7 truth table in ex memory
-                      20     ;MOV DPTR, #8001h
-0018 744B             21     MOV A,  #01001011b
-001A 908012           22     MOV DPTR, #8012h
-001D F0               23     MOVX @DPTR, A ;8-15 truth table in ex memory
-001E C2C0             24     CLR P4.0;
-0020 D2C1             25     SETB P4.1;
-0022                  26     MET1:
-0022 907FFB           27     MOV DPTR,#7FFBh ;address isReady flag
-0025                  28     isReady:                ;check flag isReady
-0025 E0               29     MOVX A,@DPTR    ;read flag
-0026 5401             30     ANL A,#01h              ;select 0 bit
-0028 60FB             31     JZ isReady
-002A 907FFA           32     MOV DPTR,#7FFAh ;addres of (x3,x2,x1,x0) tuple
-002D E0               33     MOVX A,@DPTR    ;write tuple to A
-002E F520             34     MOV 20h, A              ;write x3,x2,x1,x0 to 20h
-                      35     ; F(x3,x2,x1,x0) = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v ^x1)
-                      36     ;X3 - 3, X2 - 2, X1 - 1, X0 - 0
-                      37     
-0030 A2E0             38     MOV C, ACC.0 ;C = X0
-0032 B3               39     CPL C;C = ^X0
-0033 82E2             40     ANL C, ACC.2; C = ^X0 & X2
-0035 82E1             41     ANL C, ACC.1; C = ^X0 & X2 & X1
-0037 9204             42     MOV 20h.4, C; 03 = ^X0 & X2 & X1 -- 1
-                      43     
-0039 A2E3             44     MOV C, ACC.3;C = X3
-003B 72E0             45     ORL C, ACC.0; C = X3 V X0
-003D B3               46     CPL C; C = ^X3 & ^X0
-003E 82E2             47     ANL C, ACC.2; C = ^X3 & ^X0 & X2
-0040 7204             48     ORL C, 20h.4; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2
-0042 9204             49     MOV 20h.4, C; 03 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 -- 2
-                      50     
-0044 A2E2             51     MOV C, ACC.2;C = X2
-0046 72E1             52     ORL C, ACC.1; C = X2 V X1
-0048 B3               53     CPL C; C = ^X2 & ^X1
-0049 82E0             54     ANL C, ACC.0; C = ^X2 & ^X1 & X0
-004B 7204             55     ORL C, 20h.4; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0
-004D 9204             56     MOV 20h.4, C; 03 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 -- 4
-                      57     
-004F A2E1             58     MOV C, ACC.1; C = X1
-A51 MACRO ASSEMBLER  EVS1                                                                 09/12/2023 15:14:04 PAGE     2
+0003 908000           10     MOV DPTR, #8000h
+0006 7404             11     MOV A,#04h ;0004h - relative address OFFSET
+0008 F0               12     MOVX @DPTR, A 
+0009 908004           13     MOV DPTR,#8004h
+000C 7411             14     MOV A, #11h; 0011h - base address OFFSET
+000E F0               15     MOVX @DPTR, A
+000F 7452             16     MOV A,  #01010010b
+0011 908011           17     MOV DPTR, #8011h
+0014 F0               18     MOVX  @DPTR, A          ;0-7 truth table in ex memory
+                      19     ;MOV DPTR, #8001h
+0015 744B             20     MOV A,  #01001011b
+0017 908012           21     MOV DPTR, #8012h
+001A F0               22     MOVX @DPTR, A ;8-15 truth table in ex memory
+001B C2C0             23     CLR P4.0;
+001D D2C1             24     SETB P4.1;
+001F                  25     MET1:
+001F 907FFB           26     MOV DPTR,#7FFBh ;address isReady flag
+0022                  27     isReady:                ;check flag isReady
+0022 E0               28     MOVX A,@DPTR    ;read flag
+0023 5401             29     ANL A,#01h              ;select 0 bit
+0025 60FB             30     JZ isReady
+0027 907FFA           31     MOV DPTR,#7FFAh ;addres of (x3,x2,x1,x0) tuple
+002A E0               32     MOVX A,@DPTR    ;write tuple to A
+002B F520             33     MOV 20h, A              ;write x3,x2,x1,x0 to 20h
+                      34     ; F(x3,x2,x1,x0) = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v ^x1)
+                      35     ;X3 - 3, X2 - 2, X1 - 1, X0 - 0
+                      36     
+002D A2E0             37     MOV C, ACC.0 ;C = X0
+002F B3               38     CPL C;C = ^X0
+0030 82E2             39     ANL C, ACC.2; C = ^X0 & X2
+0032 82E1             40     ANL C, ACC.1; C = ^X0 & X2 & X1
+0034 9204             41     MOV 20h.4, C; 03 = ^X0 & X2 & X1 -- 1
+                      42     
+0036 A2E3             43     MOV C, ACC.3;C = X3
+0038 72E0             44     ORL C, ACC.0; C = X3 V X0
+003A B3               45     CPL C; C = ^X3 & ^X0
+003B 82E2             46     ANL C, ACC.2; C = ^X3 & ^X0 & X2
+003D 7204             47     ORL C, 20h.4; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2
+003F 9204             48     MOV 20h.4, C; 03 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 -- 2
+                      49     
+0041 A2E2             50     MOV C, ACC.2;C = X2
+0043 72E1             51     ORL C, ACC.1; C = X2 V X1
+0045 B3               52     CPL C; C = ^X2 & ^X1
+0046 82E0             53     ANL C, ACC.0; C = ^X2 & ^X1 & X0
+0048 7204             54     ORL C, 20h.4; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0
+004A 9204             55     MOV 20h.4, C; 03 = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 -- 4
+                      56     
+004C A2E1             57     MOV C, ACC.1; C = X1
+004E B3               58     CPL C; C = ^X1
+A51 MACRO ASSEMBLER  EVS1                                                                 09/12/2023 15:41:00 PAGE     2
 
-0051 B3               59     CPL C; C = ^X1
-0052 72E0             60     ORL C, ACC.0; C = X0 V ^X1
-0054 B3               61     CPL C; C = ^X0 & X1
-0055 72E2             62     ORL C, ACC.2; C = X2 V (^X0 & X1)
-0057 B3               63     CPL C; C = ^X2 & (X0 V ^X1)
-0058 82E3             64     ANL C, ACC.3; C = X3 & ^X2 & (X0 V ^X1)
-005A 7204             65     ORL C, 20h.4; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v ^x1)
-005C 92C0             66     MOV     P4.0,C  ;res:=F
-                      67     ; LOADING IDEALS
-005E 20E312           68     JB ACC.3, SECOND        ;IF CASE >7
-0061 908000           69     MOV DPTR, #8000h
-0064 E0               70     MOVX A, @DPTR; A = RELATIVE ADDRESS
-0065 F582             71     MOV  DPL, A
-0067 E0               72     MOVX A, @DPTR;A = BASE ADDRESS
-0068 F582             73     MOV DPL, A
-006A E0               74     MOVX A, @DPTR; A = IDEALS
-                      75     ;MOV DPTR, #8000h;
-                      76     ; -- MY ADDITION
-                      77     ;MOVX A, @DPTR
-006B 8520F0           78     MOV B, 20h
-006E 53F007           79     ANL B, #00000111b
-                      80     ;--------
-0071 0185             81     AJMP NEXT;
-0073                  82     SECOND:
-0073 908000           83     MOV DPTR, #8000h
-0076 E0               84     MOVX A, @DPTR; A = RELATIVE ADDRESS
-0077 F582             85     MOV DPL, A
-0079 E0               86     MOVX A, @DPTR; A = BASE ADDRESS
-007A 2401             87     ADD A,#0001h
-007C F582             88     MOV DPL, A
-007E E0               89     MOVX A, @DPTR; A = IDEALS
-                      90     ;MOV DPTR, #8001h;
-                      91     ;-- MY ADDITION
-007F 8520F0           92     MOV B, 20h
-0082 53F00F           93     ANL B, #00001111b
-                      94     ; -------------
-0085                  95     NEXT:
-                      96     ;MOVX A, @DPTR  ; A = half of truth table
-                      97     ;MOV B, 20h;
-                      98     ;ANL B, #00000111b; zapis v B 3 mladshih bita;
-0085 C5F0             99     XCH A, B                ; A = schetchik
-0087 6006            100     JZ END_OF_CYCLE ; if count = 0
-0089 C5F0            101     XCH A, B                ; A = half of truth table, B = count
-008B                 102     cycle:
-008B 03              103     RR A;
-008C D5F0FC          104     DJNZ B, cycle;
-008F                 105     END_OF_CYCLE:
-008F F5F0            106     MOV B, A;
-0091 A2F0            107     MOV C, B.0              ;bit iz tablici
-0093 B3              108     CPL C                   ; it inverted
-0094 92C1            109     MOV P4.1, C             ; P4.1 = inverted bit iz tablici
-0096 907FFB          110     MOV DPTR,#7FFBh
-0099 E500            111     MOV A, 00h
-009B 0122            112     AJMP MET1;
-                     113     END
-A51 MACRO ASSEMBLER  EVS1                                                                 09/12/2023 15:14:04 PAGE     3
+004F 72E0             59     ORL C, ACC.0; C = X0 V ^X1
+0051 B3               60     CPL C; C = ^X0 & X1
+0052 72E2             61     ORL C, ACC.2; C = X2 V (^X0 & X1)
+0054 B3               62     CPL C; C = ^X2 & (X0 V ^X1)
+0055 82E3             63     ANL C, ACC.3; C = X3 & ^X2 & (X0 V ^X1)
+0057 7204             64     ORL C, 20h.4; C = ^x0 & x2 & x1 v ^x3 & ^x0 & x2 v ^x2 & ^x1 & x0 v x3 & ^x2 & (x0 v ^x1)
+0059 92C0             65     MOV     P4.0,C  ;res:=F
+                      66     ; LOADING IDEALS
+005B 20E312           67     JB ACC.3, SECOND        ;IF CASE >7
+005E 908000           68     MOV DPTR, #8000h
+0061 E0               69     MOVX A, @DPTR; A = RELATIVE ADDRESS
+0062 F582             70     MOV  DPL, A
+0064 E0               71     MOVX A, @DPTR;A = BASE ADDRESS
+0065 F582             72     MOV DPL, A
+0067 E0               73     MOVX A, @DPTR; A = IDEALS
+0068 8520F0           74     MOV B, 20h
+006B 53F007           75     ANL B, #00000111b
+                      76     ;--------
+006E 0182             77     AJMP NEXT;
+0070                  78     SECOND:
+0070 908000           79     MOV DPTR, #8000h
+0073 E0               80     MOVX A, @DPTR; A = RELATIVE ADDRESS
+0074 F582             81     MOV DPL, A
+0076 E0               82     MOVX A, @DPTR; A = BASE ADDRESS
+0077 2401             83     ADD A,#0001h
+0079 F582             84     MOV DPL, A
+007B E0               85     MOVX A, @DPTR; A = IDEALS
+                      86     ;MOV DPTR, #8001h;
+                      87     ;-- MY ADDITION
+007C 8520F0           88     MOV B, 20h
+007F 53F00F           89     ANL B, #00001111b
+                      90     ; -------------
+0082                  91     NEXT:
+0082 C5F0             92     XCH A, B                ; A = counter
+0084 6006             93     JZ END_OF_CYCLE ; if count = 0
+0086 C5F0             94     XCH A, B                ; A = half of truth table, B = count
+0088                  95     cycle:
+0088 03               96     RR A;
+0089 D5F0FC           97     DJNZ B, cycle;
+008C                  98     END_OF_CYCLE:
+008C F5F0             99     MOV B, A;
+008E A2F0            100     MOV C, B.0              ;bit from table
+0090 B3              101     CPL C                   ; invert c
+0091 92C1            102     MOV P4.1, C             ; P4.1 = inverted bit from table
+0093 907FFB          103     MOV DPTR,#7FFBh
+0096 7400            104     mov A, #00h
+0098 F0              105     movx @dptr, A
+0099 011F            106     AJMP MET1;
+                     107     END
+A51 MACRO ASSEMBLER  EVS1                                                                 09/12/2023 15:41:00 PAGE     3
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -133,17 +127,16 @@ N A M E             T Y P E  V A L U E   ATTRIBUTES
 ACC. . . . . . . .  D ADDR   00E0H   A   
 B. . . . . . . . .  D ADDR   00F0H   A   
 BASEADDRESS. . . .  N NUMB   0011H   A   
-CYCLE. . . . . . .  C ADDR   008BH   A   
+CYCLE. . . . . . .  C ADDR   0088H   A   
 DPL. . . . . . . .  D ADDR   0082H   A   
-END_OF_CYCLE . . .  C ADDR   008FH   A   
-ISREADY. . . . . .  C ADDR   0025H   A   
+END_OF_CYCLE . . .  C ADDR   008CH   A   
+ISREADY. . . . . .  C ADDR   0022H   A   
 MAIN . . . . . . .  C ADDR   0003H   A   
-MET1 . . . . . . .  C ADDR   0022H   A   
-NEXT . . . . . . .  C ADDR   0085H   A   
-P2 . . . . . . . .  D ADDR   00A0H   A   
+MET1 . . . . . . .  C ADDR   001FH   A   
+NEXT . . . . . . .  C ADDR   0082H   A   
 P4 . . . . . . . .  N NUMB   00C0H   A   
 RELATIVEADDRESS. .  N NUMB   0004H   A   
-SECOND . . . . . .  C ADDR   0073H   A   
+SECOND . . . . . .  C ADDR   0070H   A   
 
 
 REGISTER BANK(S) USED: 0 

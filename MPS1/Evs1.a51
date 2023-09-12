@@ -7,7 +7,6 @@ LJMP MAIN
 MAIN:
 ;MOV P0, #0FFh
 P4 EQU 0C0h
-MOV P2,#00h
 MOV DPTR, #8000h
 MOV A,#04h ;0004h - relative address OFFSET
 MOVX @DPTR, A 
@@ -72,9 +71,6 @@ MOV  DPL, A
 MOVX A, @DPTR;A = BASE ADDRESS
 MOV DPL, A
 MOVX A, @DPTR; A = IDEALS
-;MOV DPTR, #8000h;
-; -- MY ADDITION
-;MOVX A, @DPTR
 MOV B, 20h
 ANL B, #00000111b
 ;--------
@@ -93,10 +89,7 @@ MOV B, 20h
 ANL B, #00001111b
 ; -------------
 NEXT:
-;MOVX A, @DPTR	; A = half of truth table
-;MOV B, 20h;
-;ANL B, #00000111b; zapis v B 3 mladshih bita;
-XCH A, B		; A = schetchik
+XCH A, B		; A = counter
 JZ END_OF_CYCLE	; if count = 0
 XCH A, B		; A = half of truth table, B = count
 cycle:
@@ -104,10 +97,11 @@ RR A;
 DJNZ B, cycle;
 END_OF_CYCLE:
 MOV B, A;
-MOV C, B.0		;bit iz tablici
-CPL C			; it inverted
-MOV P4.1, C		; P4.1 = inverted bit iz tablici
+MOV C, B.0		;bit from table
+CPL C			; invert c
+MOV P4.1, C		; P4.1 = inverted bit from table
 MOV DPTR,#7FFBh
-MOV A, 00h
+mov A, #00h
+movx @dptr, A
 AJMP MET1;
 END
