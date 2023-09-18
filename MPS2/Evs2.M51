@@ -1,0 +1,138 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        09/18/2023  10:11:16  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE Evs2.obj TO Evs2 RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  Evs2.obj (EVS2)
+
+
+LINK MAP OF MODULE:  Evs2 (EVS2)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     809BH     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  Evs2 (EVS2)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        EVS2
+  D:00E0H         SYMBOL        ACC
+  D:00F0H         SYMBOL        B
+  N:0011H         SYMBOL        BASEADDRESS
+  C:8088H         SYMBOL        CYCLE
+  D:0082H         SYMBOL        DPL
+  C:808CH         SYMBOL        END_OF_CYCLE
+  C:8022H         SYMBOL        ISREADY
+  C:8003H         SYMBOL        MAIN
+  C:801FH         SYMBOL        MET1
+  C:8082H         SYMBOL        NEXT
+  N:00C0H         SYMBOL        P4
+  N:0004H         SYMBOL        RELATIVEADDRESS
+  C:8070H         SYMBOL        SECOND
+  C:8000H         LINE#         5
+  C:8003H         LINE#         10
+  C:8006H         LINE#         11
+  C:8008H         LINE#         12
+  C:8009H         LINE#         13
+  C:800CH         LINE#         14
+  C:800EH         LINE#         15
+  C:800FH         LINE#         16
+  C:8011H         LINE#         17
+  C:8014H         LINE#         18
+  C:8015H         LINE#         20
+  C:8017H         LINE#         21
+  C:801AH         LINE#         22
+  C:801BH         LINE#         23
+  C:801DH         LINE#         24
+  C:801FH         LINE#         26
+  C:8022H         LINE#         28
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/18/2023  10:11:16  PAGE 2
+
+
+  C:8023H         LINE#         29
+  C:8025H         LINE#         30
+  C:8027H         LINE#         31
+  C:802AH         LINE#         32
+  C:802BH         LINE#         33
+  C:802DH         LINE#         37
+  C:802FH         LINE#         38
+  C:8030H         LINE#         39
+  C:8032H         LINE#         40
+  C:8034H         LINE#         41
+  C:8036H         LINE#         43
+  C:8038H         LINE#         44
+  C:803AH         LINE#         45
+  C:803BH         LINE#         46
+  C:803DH         LINE#         47
+  C:803FH         LINE#         48
+  C:8041H         LINE#         50
+  C:8043H         LINE#         51
+  C:8045H         LINE#         52
+  C:8046H         LINE#         53
+  C:8048H         LINE#         54
+  C:804AH         LINE#         55
+  C:804CH         LINE#         57
+  C:804EH         LINE#         58
+  C:804FH         LINE#         59
+  C:8051H         LINE#         60
+  C:8052H         LINE#         61
+  C:8054H         LINE#         62
+  C:8055H         LINE#         63
+  C:8057H         LINE#         64
+  C:8059H         LINE#         65
+  C:805BH         LINE#         67
+  C:805EH         LINE#         68
+  C:8061H         LINE#         69
+  C:8062H         LINE#         70
+  C:8064H         LINE#         71
+  C:8065H         LINE#         72
+  C:8067H         LINE#         73
+  C:8068H         LINE#         74
+  C:806BH         LINE#         75
+  C:806EH         LINE#         77
+  C:8070H         LINE#         79
+  C:8073H         LINE#         80
+  C:8074H         LINE#         81
+  C:8076H         LINE#         82
+  C:8077H         LINE#         83
+  C:8079H         LINE#         84
+  C:807BH         LINE#         85
+  C:807CH         LINE#         88
+  C:807FH         LINE#         89
+  C:8082H         LINE#         92
+  C:8084H         LINE#         93
+  C:8086H         LINE#         94
+  C:8088H         LINE#         96
+  C:8089H         LINE#         97
+  C:808CH         LINE#         99
+  C:808EH         LINE#         100
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/18/2023  10:11:16  PAGE 3
+
+
+  C:8090H         LINE#         101
+  C:8091H         LINE#         102
+  C:8093H         LINE#         103
+  C:8096H         LINE#         104
+  C:8098H         LINE#         105
+  C:8099H         LINE#         106
+  -------         ENDMOD        EVS2
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 009BH BYTE ( 7%) *
+******************************************************************************
+
+Program Size: data=8.0 xdata=0 code=32923
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
