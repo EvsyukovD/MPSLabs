@@ -1,11 +1,27 @@
 ;F(X3,X2,X1,X0) == 1 <=> 1,4,6,8,9,11,14
-ORG 8000h;
+ORG 0000h;
 BASEADDRESS EQU 0011h;11h
 RELATIVEADDRESS EQU 0004h;04h
 LJMP MAIN
-;ORG 5000
+
 MAIN:
-;MOV P0, #0FFh
+; init values for timer in every case: 1...5 sec wait
+MOV 40H, #5 ;0; seach table for number of seconds for each set of x3,x2,x1,x0
+MOV 41H, #2 ;1
+MOV 42H, #1 ;2
+MOV 43H, #1 ;3
+MOV 44H, #1 ;4
+MOV 45H, #3 ;5
+MOV 46H, #3 ;6
+MOV 47H, #1 ;7
+MOV 48H, #5;8
+MOV 49H, #4;9
+MOV 4AH, #1;10
+MOV 4BH, #2;11
+MOV 4CH, #1;12
+MOV 4DH, #1;13
+MOV 4EH, #1;14
+MOV 4FH, #1;15
 P4 EQU 0C0h
 MOV DPTR, #8000h
 MOV A,#04h ;0004h - relative address OFFSET
@@ -100,8 +116,42 @@ MOV B, A;
 MOV C, B.0		;bit from table
 CPL C			; invert c
 MOV P4.1, C		; P4.1 = inverted bit from table
+
+;next tuple
+MOV DPTR, #7FFAh
+MOVX A, @DPTR
+ADD A, #1
+JNB ACC.4, WRITE
+SET_ZERO:
+MOV A, #0000h
+WRITE:
+MOVX @DPTR, A
+
+;timer - sleep
+MOV A, 20h		; A = Q3Q2Q1Q0
+ANL A, #00001111b; clear high half
+ADD A, #40h		;address of number
+MOV R1, A
+MOV A, @R1		; seconds
+MOV TMOD,#00000001b	; mode 1
+MOV B, #001h;#0C8h
+MOV R3, B		; out circle 200
+MOV B, #00Fh;#014h ;number of iterations
+MUL AB			; 20seconds A = inner circle
+MOV R2, A; inner circle 250*20seconds R2=A
+; duration of 1 cycle ~ 0.07 sec
+; num of cycles which duration not lower than 1 sec is =>15
+    START: CLR TR0		;reset counter
+        MOV TL0, #01Ah	;init value
+        SETB TR0		;start count
+        CLOCK:JBC TF0, FINISH	;250ms
+           JMP CLOCK
+           FINISH: DJNZ R2, START	;inner circle end 20*seconds = A
+            MOV R2, A; inner circle 25020*seconds
+            DJNZ R3, START
+
 MOV DPTR,#7FFBh
-mov A, #00h
-movx @dptr, A
+MOV A, #00h
+MOVX @DPTR, A
 AJMP MET1;
 END
