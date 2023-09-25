@@ -6,7 +6,7 @@ LJMP MAIN
 
 MAIN:
 ; init values for timer in every case: 1...5 sec wait
-MOV 40H, #5 ;0; seach table for number of seconds for each set of x3,x2,x1,x0
+MOV 40H, #5 ;0;  make "table" for number of seconds for each tuple (x3,x2,x1,x0)
 MOV 41H, #2 ;1
 MOV 42H, #1 ;2
 MOV 43H, #1 ;3
@@ -99,11 +99,8 @@ MOVX A, @DPTR; A = BASE ADDRESS
 ADD A,#0001h
 MOV DPL, A
 MOVX A, @DPTR; A = IDEALS
-;MOV DPTR, #8001h;
-;-- MY ADDITION
 MOV B, 20h
 ANL B, #00001111b
-; -------------
 NEXT:
 XCH A, B		; A = counter
 JZ END_OF_CYCLE	; if count = 0
@@ -117,6 +114,30 @@ MOV C, B.0		;bit from table
 CPL C			; invert c
 MOV P4.1, C		; P4.1 = inverted bit from table
 
+;timer - sleep
+; duration of 1 cycle ~ 0.071 sec
+; num of cycles which duration not lower than 1 sec is =>15
+MOV A, 20h		; A = X3X2X1X0
+ANL A, #00001111b; clear high half
+ADD A, #40h		;address of number
+MOV R1, A
+MOV A, @R1		; seconds from address (40h + tuple_number)
+MOV TMOD,#00000001b	; mode 1
+MOV B, #001h;#0C8h ; 1 external circle
+MOV R3, B
+MOV B, #00Fh;#014h ;number of iterations = 15
+MUL AB			; inner circle seconds: 0.071 * B * A
+MOV R2, A; inner circle seconds R2 = A * B * 0.071
+
+    START: CLR TR0		;reset counter
+        MOV TL0, #000h;#01Ah	;init value
+        SETB TR0		;start count
+        CLOCK:JBC TF0, FINISH	;250ms
+           JMP CLOCK
+           FINISH: DJNZ R2, START	;inner circle end 20*seconds = A
+            MOV R2, A; inner circle 25020*seconds
+            DJNZ R3, START
+
 ;next tuple
 MOV DPTR, #7FFAh
 MOVX A, @DPTR
@@ -127,29 +148,7 @@ MOV A, #0000h
 WRITE:
 MOVX @DPTR, A
 
-;timer - sleep
-MOV A, 20h		; A = Q3Q2Q1Q0
-ANL A, #00001111b; clear high half
-ADD A, #40h		;address of number
-MOV R1, A
-MOV A, @R1		; seconds
-MOV TMOD,#00000001b	; mode 1
-MOV B, #001h;#0C8h
-MOV R3, B		; out circle 200
-MOV B, #00Fh;#014h ;number of iterations
-MUL AB			; 20seconds A = inner circle
-MOV R2, A; inner circle 250*20seconds R2=A
-; duration of 1 cycle ~ 0.07 sec
-; num of cycles which duration not lower than 1 sec is =>15
-    START: CLR TR0		;reset counter
-        MOV TL0, #01Ah	;init value
-        SETB TR0		;start count
-        CLOCK:JBC TF0, FINISH	;250ms
-           JMP CLOCK
-           FINISH: DJNZ R2, START	;inner circle end 20*seconds = A
-            MOV R2, A; inner circle 25020*seconds
-            DJNZ R3, START
-
+; set isReadyBit = 0
 MOV DPTR,#7FFBh
 MOV A, #00h
 MOVX @DPTR, A

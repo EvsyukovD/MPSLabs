@@ -1,4 +1,4 @@
-BL51 BANKED LINKER/LOCATER V6.22                                                        09/25/2023  14:21:18  PAGE 1
+BL51 BANKED LINKER/LOCATER V6.22                                                        09/25/2023  16:04:07  PAGE 1
 
 
 BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
@@ -32,11 +32,11 @@ SYMBOL TABLE OF MODULE:  Evs2 (EVS2)
   D:00E0H         SYMBOL        ACC
   D:00F0H         SYMBOL        B
   N:0011H         SYMBOL        BASEADDRESS
-  C:00EBH         SYMBOL        CLOCK
+  C:00DFH         SYMBOL        CLOCK
   C:00B8H         SYMBOL        CYCLE
   D:0082H         SYMBOL        DPL
   C:00BCH         SYMBOL        END_OF_CYCLE
-  C:00F0H         SYMBOL        FINISH
+  C:00E4H         SYMBOL        FINISH
   C:0052H         SYMBOL        ISREADY
   C:0003H         SYMBOL        MAIN
   C:004FH         SYMBOL        MET1
@@ -44,13 +44,13 @@ SYMBOL TABLE OF MODULE:  Evs2 (EVS2)
   N:00C0H         SYMBOL        P4
   N:0004H         SYMBOL        RELATIVEADDRESS
   C:00A0H         SYMBOL        SECOND
-  C:00CCH         SYMBOL        SET_ZERO
-  C:00E4H         SYMBOL        START
+  C:00F2H         SYMBOL        SET_ZERO
+  C:00D8H         SYMBOL        START
   B:0088H.5       SYMBOL        TF0
   D:008AH         SYMBOL        TL0
   D:0089H         SYMBOL        TMOD
   B:0088H.4       SYMBOL        TR0
-  C:00CEH         SYMBOL        WRITE
+  C:00F4H         SYMBOL        WRITE
   C:0000H         LINE#         5
   C:0003H         LINE#         9
   C:0006H         LINE#         10
@@ -59,7 +59,7 @@ SYMBOL TABLE OF MODULE:  Evs2 (EVS2)
   C:000FH         LINE#         13
   C:0012H         LINE#         14
   C:0015H         LINE#         15
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/25/2023  14:21:18  PAGE 2
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/25/2023  16:04:07  PAGE 2
 
 
   C:0018H         LINE#         16
@@ -119,7 +119,7 @@ SYMBOL TABLE OF MODULE:  Evs2 (EVS2)
   C:0087H         LINE#         80
   C:0089H         LINE#         81
   C:008BH         LINE#         83
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/25/2023  14:21:18  PAGE 3
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/25/2023  16:04:07  PAGE 3
 
 
   C:008EH         LINE#         84
@@ -138,48 +138,48 @@ SYMBOL TABLE OF MODULE:  Evs2 (EVS2)
   C:00A7H         LINE#         99
   C:00A9H         LINE#         100
   C:00ABH         LINE#         101
-  C:00ACH         LINE#         104
-  C:00AFH         LINE#         105
-  C:00B2H         LINE#         108
-  C:00B4H         LINE#         109
-  C:00B6H         LINE#         110
-  C:00B8H         LINE#         112
-  C:00B9H         LINE#         113
-  C:00BCH         LINE#         115
-  C:00BEH         LINE#         116
-  C:00C0H         LINE#         117
-  C:00C1H         LINE#         118
-  C:00C3H         LINE#         121
-  C:00C6H         LINE#         122
-  C:00C7H         LINE#         123
-  C:00C9H         LINE#         124
-  C:00CCH         LINE#         126
-  C:00CEH         LINE#         128
-  C:00CFH         LINE#         131
-  C:00D1H         LINE#         132
-  C:00D3H         LINE#         133
-  C:00D5H         LINE#         134
-  C:00D6H         LINE#         135
-  C:00D7H         LINE#         136
-  C:00DAH         LINE#         137
-  C:00DDH         LINE#         138
-  C:00DFH         LINE#         139
-  C:00E2H         LINE#         140
-  C:00E3H         LINE#         141
-  C:00E4H         LINE#         143
-  C:00E6H         LINE#         144
-  C:00E9H         LINE#         145
-  C:00EBH         LINE#         146
-  C:00EEH         LINE#         147
-  C:00F0H         LINE#         148
-  C:00F2H         LINE#         149
-  C:00F3H         LINE#         150
-  C:00F5H         LINE#         152
-  C:00F8H         LINE#         153
-  C:00FAH         LINE#         154
-  C:00FBH         LINE#         155
+  C:00ACH         LINE#         102
+  C:00AFH         LINE#         103
+  C:00B2H         LINE#         105
+  C:00B4H         LINE#         106
+  C:00B6H         LINE#         107
+  C:00B8H         LINE#         109
+  C:00B9H         LINE#         110
+  C:00BCH         LINE#         112
+  C:00BEH         LINE#         113
+  C:00C0H         LINE#         114
+  C:00C1H         LINE#         115
+  C:00C3H         LINE#         118
+  C:00C5H         LINE#         119
+  C:00C7H         LINE#         120
+  C:00C9H         LINE#         121
+  C:00CAH         LINE#         122
+  C:00CBH         LINE#         123
+  C:00CEH         LINE#         124
+  C:00D1H         LINE#         125
+  C:00D3H         LINE#         126
+  C:00D6H         LINE#         127
+  C:00D7H         LINE#         128
+  C:00D8H         LINE#         131
+  C:00DAH         LINE#         132
+  C:00DDH         LINE#         133
+  C:00DFH         LINE#         134
+  C:00E2H         LINE#         135
+  C:00E4H         LINE#         136
+  C:00E6H         LINE#         137
+  C:00E7H         LINE#         138
+  C:00E9H         LINE#         141
+  C:00ECH         LINE#         142
+  C:00EDH         LINE#         143
+  C:00EFH         LINE#         144
+  C:00F2H         LINE#         146
+  C:00F4H         LINE#         148
+  C:00F5H         LINE#         151
+  C:00F8H         LINE#         152
+  C:00FAH         LINE#         153
+  C:00FBH         LINE#         154
   -------         ENDMOD        EVS2
-BL51 BANKED LINKER/LOCATER V6.22                                                      09/25/2023  14:21:18  PAGE 4
+BL51 BANKED LINKER/LOCATER V6.22                                                      09/25/2023  16:04:07  PAGE 4
 
 
 
