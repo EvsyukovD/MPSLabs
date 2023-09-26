@@ -123,19 +123,28 @@ ADD A, #40h		;address of number
 MOV R1, A
 MOV A, @R1		; seconds from address (40h + tuple_number)
 MOV TMOD,#00000001b	; mode 1
+
 MOV B, #001h;#0C8h ; 1 external circle
 MOV R3, B
-MOV B, #00Fh;#014h ;number of iterations = 15
+DEC A
+JZ SET_7
+SET_E:
+MOV B, #00Eh;#014h ;number of iterations = 15
+JMP MUL_MET
+SET_7:
+MOV B, #007h
+MUL_MET:
+MOV A, @R1
 MUL AB			; inner circle seconds: 0.071 * B * A
 MOV R2, A; inner circle seconds R2 = A * B * 0.071
 
     START: CLR TR0		;reset counter
         MOV TL0, #000h;#01Ah	;init value
         SETB TR0		;start count
-        CLOCK:JBC TF0, FINISH	;250ms
+        CLOCK:JBC TF0, FINISH	
            JMP CLOCK
-           FINISH: DJNZ R2, START	;inner circle end 20*seconds = A
-            MOV R2, A; inner circle 25020*seconds
+           FINISH: DJNZ R2, START
+            MOV R2, A
             DJNZ R3, START
 
 ;next tuple

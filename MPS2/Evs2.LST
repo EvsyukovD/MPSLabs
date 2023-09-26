@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS2                                                                 09/25/2023 16:04:07 PAGE     1
+A51 MACRO ASSEMBLER  EVS2                                                                 09/26/2023 15:01:27 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
 0062 82E1             56     ANL C, ACC.1; C = ^X0 & X2 & X1
 0064 9204             57     MOV 20h.4, C; 03 = ^X0 & X2 & X1 -- 1
                       58     
-A51 MACRO ASSEMBLER  EVS2                                                                 09/25/2023 16:04:07 PAGE     2
+A51 MACRO ASSEMBLER  EVS2                                                                 09/26/2023 15:01:27 PAGE     2
 
 0066 A2E3             59     MOV C, ACC.3;C = X3
 0068 72E0             60     ORL C, ACC.0; C = X3 V X0
@@ -126,47 +126,57 @@ LOC  OBJ            LINE     SOURCE
 00C1 92C1            115     MOV P4.1, C             ; P4.1 = inverted bit from table
                      116     
                      117     ;timer - sleep
-00C3 E520            118     MOV A, 20h              ; A = Q3Q2Q1Q0
-00C5 540F            119     ANL A, #00001111b; clear high half
-00C7 2440            120     ADD A, #40h             ;address of number
-00C9 F9              121     MOV R1, A
-00CA E7              122     MOV A, @R1              ; seconds
-00CB 758901          123     MOV TMOD,#00000001b     ; mode 1
-00CE 75F001          124     MOV B, #001h;#0C8h
-A51 MACRO ASSEMBLER  EVS2                                                                 09/25/2023 16:04:07 PAGE     3
+                     118     ; duration of 1 cycle ~ 0.071 sec
+                     119     ; num of cycles which duration not lower than 1 sec is =>15
+00C3 E520            120     MOV A, 20h              ; A = X3X2X1X0
+00C5 540F            121     ANL A, #00001111b; clear high half
+00C7 2440            122     ADD A, #40h             ;address of number
+00C9 F9              123     MOV R1, A
+00CA E7              124     MOV A, @R1              ; seconds from address (40h + tuple_number)
+A51 MACRO ASSEMBLER  EVS2                                                                 09/26/2023 15:01:27 PAGE     3
 
-00D1 ABF0            125     MOV R3, B               ; out circle 200
-00D3 75F00F          126     MOV B, #00Fh;#014h ;number of iterations
-00D6 A4              127     MUL AB                  ; 20seconds A = inner circle
-00D7 FA              128     MOV R2, A; inner circle 250*20seconds R2=A
-                     129     ; duration of 1 cycle ~ 0.07 sec
-                     130     ; num of cycles which duration not lower than 1 sec is =>15
-00D8 C28C            131         START: CLR TR0              ;reset counter
-00DA 758A00          132             MOV TL0, #000h;#01Ah    ;init value
-00DD D28C            133             SETB TR0                ;start count
-00DF 108D02          134             CLOCK:JBC TF0, FINISH   ;250ms
-00E2 80FB            135                JMP CLOCK
-00E4 DAF2            136                FINISH: DJNZ R2, START       ;inner circle end 20*seconds = A
-00E6 FA              137                 MOV R2, A; inner circle 25020*seconds
-00E7 DBEF            138                 DJNZ R3, START
-                     139     
-                     140     ;next tuple
-00E9 907FFA          141     MOV DPTR, #7FFAh
-00EC E0              142     MOVX A, @DPTR
-00ED 2401            143     ADD A, #1
-00EF 30E402          144     JNB ACC.4, WRITE
-00F2                 145     SET_ZERO:
-00F2 7400            146     MOV A, #0000h
-00F4                 147     WRITE:
-00F4 F0              148     MOVX @DPTR, A
+00CB 758901          125     MOV TMOD,#00000001b     ; mode 1
+                     126     
+00CE 75F001          127     MOV B, #001h;#0C8h ; 1 external circle
+00D1 ABF0            128     MOV R3, B
+00D3 14              129     DEC A
+00D4 6005            130     JZ SET_7
+00D6                 131     SET_E:
+00D6 75F00E          132     MOV B, #00Eh;#014h ;number of iterations = 15
+00D9 8003            133     JMP MUL_MET
+00DB                 134     SET_7:
+00DB 75F007          135     MOV B, #007h
+00DE                 136     MUL_MET:
+00DE E7              137     MOV A, @R1
+00DF A4              138     MUL AB                  ; inner circle seconds: 0.071 * B * A
+00E0 FA              139     MOV R2, A; inner circle seconds R2 = A * B * 0.071
+                     140     
+00E1 C28C            141         START: CLR TR0              ;reset counter
+00E3 758A00          142             MOV TL0, #000h;#01Ah    ;init value
+00E6 D28C            143             SETB TR0                ;start count
+00E8 108D02          144             CLOCK:JBC TF0, FINISH   
+00EB 80FB            145                JMP CLOCK
+00ED DAF2            146                FINISH: DJNZ R2, START
+00EF FA              147                 MOV R2, A
+00F0 DBEF            148                 DJNZ R3, START
                      149     
-                     150     ; set isReadyBit = 0
-00F5 907FFB          151     MOV DPTR,#7FFBh
-00F8 7400            152     MOV A, #00h
-00FA F0              153     MOVX @DPTR, A
-00FB 014F            154     AJMP MET1;
-                     155     END
-A51 MACRO ASSEMBLER  EVS2                                                                 09/25/2023 16:04:07 PAGE     4
+                     150     ;next tuple
+00F2 907FFA          151     MOV DPTR, #7FFAh
+00F5 E0              152     MOVX A, @DPTR
+00F6 2401            153     ADD A, #1
+00F8 30E402          154     JNB ACC.4, WRITE
+00FB                 155     SET_ZERO:
+00FB 7400            156     MOV A, #0000h
+00FD                 157     WRITE:
+00FD F0              158     MOVX @DPTR, A
+                     159     
+                     160     ; set isReadyBit = 0
+00FE 907FFB          161     MOV DPTR,#7FFBh
+0101 7400            162     MOV A, #00h
+0103 F0              163     MOVX @DPTR, A
+0104 014F            164     AJMP MET1;
+                     165     END
+A51 MACRO ASSEMBLER  EVS2                                                                 09/26/2023 15:01:27 PAGE     4
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -177,25 +187,28 @@ N A M E             T Y P E  V A L U E   ATTRIBUTES
 ACC. . . . . . . .  D ADDR   00E0H   A   
 B. . . . . . . . .  D ADDR   00F0H   A   
 BASEADDRESS. . . .  N NUMB   0011H   A   
-CLOCK. . . . . . .  C ADDR   00DFH   A   
+CLOCK. . . . . . .  C ADDR   00E8H   A   
 CYCLE. . . . . . .  C ADDR   00B8H   A   
 DPL. . . . . . . .  D ADDR   0082H   A   
 END_OF_CYCLE . . .  C ADDR   00BCH   A   
-FINISH . . . . . .  C ADDR   00E4H   A   
+FINISH . . . . . .  C ADDR   00EDH   A   
 ISREADY. . . . . .  C ADDR   0052H   A   
 MAIN . . . . . . .  C ADDR   0003H   A   
 MET1 . . . . . . .  C ADDR   004FH   A   
+MUL_MET. . . . . .  C ADDR   00DEH   A   
 NEXT . . . . . . .  C ADDR   00B2H   A   
 P4 . . . . . . . .  N NUMB   00C0H   A   
 RELATIVEADDRESS. .  N NUMB   0004H   A   
 SECOND . . . . . .  C ADDR   00A0H   A   
-SET_ZERO . . . . .  C ADDR   00F2H   A   
-START. . . . . . .  C ADDR   00D8H   A   
+SET_7. . . . . . .  C ADDR   00DBH   A   
+SET_E. . . . . . .  C ADDR   00D6H   A   
+SET_ZERO . . . . .  C ADDR   00FBH   A   
+START. . . . . . .  C ADDR   00E1H   A   
 TF0. . . . . . . .  B ADDR   0088H.5 A   
 TL0. . . . . . . .  D ADDR   008AH   A   
 TMOD . . . . . . .  D ADDR   0089H   A   
 TR0. . . . . . . .  B ADDR   0088H.4 A   
-WRITE. . . . . . .  C ADDR   00F4H   A   
+WRITE. . . . . . .  C ADDR   00FDH   A   
 
 
 REGISTER BANK(S) USED: 0 
