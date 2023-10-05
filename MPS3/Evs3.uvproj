@@ -363,11 +363,6 @@
           <GroupName>Source Group 1</GroupName>
           <Files>
             <File>
-              <FileName>Evs3.a51</FileName>
-              <FileType>2</FileType>
-              <FilePath>.\Evs3.a51</FilePath>
-            </File>
-            <File>
               <FileName>Evs33.a51</FileName>
               <FileType>2</FileType>
               <FilePath>.\Evs33.a51</FilePath>
