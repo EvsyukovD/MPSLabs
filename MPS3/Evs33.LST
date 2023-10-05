@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     1
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:24:46 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -28,8 +28,8 @@ LOC  OBJ            LINE     SOURCE
 0013 E0               19     MOVX A,@DPTR;
 0014 FA               20     MOV R2, A
 0015 908000           21     MOV DPTR, #8000h
-0018 20E47A           22     JB ACC.4, PROGRAMM_C_1
-                      23     ; C = 0
+0018 20E477           22     JB ACC.4, PROGRAMM_C_1
+                      23     ; if C = 0
 001B                  24     PROGRAMM_C_0:
                       25     
 001B 5403             26     ANL A, #00000011b ; read A1A0
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
 003D A2E4             56     MOV C, ACC.4
 003F 92F6             57     MOV B.6, C
                       58     
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     2
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:24:46 PAGE     2
 
 0041 EC               59     MOV A, R4
                       60     
@@ -115,7 +115,7 @@ LOC  OBJ            LINE     SOURCE
   0015               104     SEQ  EQU 00010101b
   001F               105     MASK EQU 00011111b
                      106     
-0078 752000          107     MOV RES_ADDRESS,#00h
+0078 752000          107     MOV RES_ADDRESS,#00h ;init counter (use for this purpose result address)
 007B ED              108     MOV A, R5
 007C                 109     COUNT_CYCLE:
 007C 541F            110     ANL A, #MASK
@@ -131,96 +131,94 @@ LOC  OBJ            LINE     SOURCE
                      120           ; ACC.n = ACC.(n + 1) n = 0...6 and new C = ACC.0 (previous ACC.0)
                      121               ; we have made arithmetic shift where C equals previous ACC.0 
 008A FE              122     MOV R6, A ;save new high bits
-008B ED              123     MOV A, R5
+008B ED              123     MOV A, R5 ; A = low bits of 16-bit value
 008C 13              124     RRC A ; the same operation, but there prevous C is ACC.0 from high bits
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     3
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:24:46 PAGE     3
 
-008D 6057            125     JZ MOV_RESULT
-008F FD              126     MOV R5, A ; save new low bits
-0090 80EA            127     JMP COUNT_CYCLE
-                     128     
+                     125           ; so we shift our 16-bit value to right and fill higher bits by 0
+008D 6054            126     JZ MOV_RESULT
+008F FD              127     MOV R5, A ; save new low bits
+0090 80EA            128     JMP COUNT_CYCLE
                      129     
-                     130     
-0092 0200EB          131     LJMP HANDLE_END
-                     132     ; C = 1
-0095                 133     PROGRAMM_C_1:
-                     134     ; lets find maximum value in A array 
-0095 5403            135     ANL A, #00000011b ; read A1A0
-0097 FB              136     MOV R3, A
-0098 7400            137     MOV A, #BASEADDRESS_A
-009A 2B              138     ADD A, R3; upper board for maximum address in A array
-009B FB              139     MOV R3, A; save this board
-                     140     
-  0021               141     INDEX_ADDR EQU 21h
-  0022               142     MAX_A_ADDR EQU 22h
-  0023               143     MAX_B_ADDR EQU 23h
-                     144     ; cycle for finding maximum
-009C 752100          145     MOV INDEX_ADDR, #BASEADDRESS_A ; address of i
-009F 752200          146     MOV MAX_A_ADDR, #00h; maximum value in array A
-00A2                 147     MAXIMUM_SEARCH_CYCLE_A:
-00A2 EB              148     MOV A, R3
-00A3 9521            149     SUBB A, INDEX_ADDR; check address <= R3
-00A5 4012            150     JC FIND_MAX_ARRAY_B
-00A7 852182          151     MOV DPL, INDEX_ADDR
-00AA E0              152     MOVX A, @DPTR; get A[i]
-00AB 9522            153     SUBB A, MAX_A_ADDR
-00AD 4003            154     JC NEXT_INDEX_A
-00AF E0              155     MOVX A, @DPTR
-00B0 F522            156     MOV MAX_A_ADDR, A; new maximum value
-00B2                 157     NEXT_INDEX_A:
-00B2 E521            158     MOV A, INDEX_ADDR
-00B4 04              159     INC A
-00B5 F521            160     MOV INDEX_ADDR, A; increment i
-00B7 80E9            161     JMP MAXIMUM_SEARCH_CYCLE_A
-                     162     
-00B9                 163     FIND_MAX_ARRAY_B:
-                     164     ; lets find maximum value in B array
-00B9 EA              165     MOV A, R2
-00BA 540C            166     ANL A, #00001100b; read B1, B0
-00BC 03              167     RR A
-00BD 03              168     RR A ; ACC.1 = B1, ACC.0 = B0
-00BE FC              169     MOV R4, A
-00BF 7404            170     MOV A, #BASEADDRESS_B
-00C1 2C              171     ADD A, R4; upper board for maximum address in B array
-00C2 FC              172     MOV R4, A; save this board
-                     173     
-                     174     ; cycle for finding maximum
-00C3 752104          175     MOV INDEX_ADDR, #BASEADDRESS_B ; address of i
-00C6 752300          176     MOV MAX_B_ADDR, #00h; maximum value in array B
-00C9                 177     MAXIMUM_SEARCH_CYCLE_B:
-00C9 EC              178     MOV A, R4
-00CA 9521            179     SUBB A, INDEX_ADDR; check address <= R4
-00CC 4012            180     JC CALCULATE_AND
-00CE 852182          181     MOV DPL, INDEX_ADDR
-00D1 E0              182     MOVX A, @DPTR; get B[i]
-00D2 9523            183     SUBB A, MAX_B_ADDR
-00D4 4003            184     JC NEXT_INDEX_B
-00D6 E0              185     MOVX A, @DPTR
-00D7 F523            186     MOV MAX_B_ADDR, A; new maximum value
-00D9                 187     NEXT_INDEX_B:
-00D9 E521            188     MOV A, INDEX_ADDR
-00DB 04              189     INC A
-00DC F521            190     MOV INDEX_ADDR, A; increment i
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     4
+                     130     ; if C = 1
+0092                 131     PROGRAMM_C_1:
+                     132     ; lets find maximum value in A array 
+0092 5403            133     ANL A, #00000011b ; read A1A0
+0094 FB              134     MOV R3, A
+0095 7400            135     MOV A, #BASEADDRESS_A
+0097 2B              136     ADD A, R3; upper board for maximum address in A array
+0098 FB              137     MOV R3, A; save this board
+                     138     
+  0021               139     INDEX_ADDR EQU 21h ; address for storing index
+  0022               140     MAX_A_ADDR EQU 22h ; address of maximum for A array
+  0023               141     MAX_B_ADDR EQU 23h ; address of maximum for A array
+                     142     ; cycle for finding maximum
+0099 752100          143     MOV INDEX_ADDR, #BASEADDRESS_A ; address of i
+009C 752200          144     MOV MAX_A_ADDR, #00h; maximum value in array A
+009F                 145     MAXIMUM_SEARCH_CYCLE_A:
+009F EB              146     MOV A, R3
+00A0 9521            147     SUBB A, INDEX_ADDR; check address <= R3
+00A2 4012            148     JC FIND_MAX_ARRAY_B
+00A4 852182          149     MOV DPL, INDEX_ADDR
+00A7 E0              150     MOVX A, @DPTR; get A[i]
+00A8 9522            151     SUBB A, MAX_A_ADDR
+00AA 4003            152     JC NEXT_INDEX_A
+00AC E0              153     MOVX A, @DPTR
+00AD F522            154     MOV MAX_A_ADDR, A; new maximum value
+00AF                 155     NEXT_INDEX_A:
+00AF E521            156     MOV A, INDEX_ADDR
+00B1 04              157     INC A
+00B2 F521            158     MOV INDEX_ADDR, A; increment i
+00B4 80E9            159     JMP MAXIMUM_SEARCH_CYCLE_A
+                     160     
+00B6                 161     FIND_MAX_ARRAY_B:
+                     162     ; lets find maximum value in B array
+00B6 EA              163     MOV A, R2
+00B7 540C            164     ANL A, #00001100b; read B1, B0
+00B9 03              165     RR A
+00BA 03              166     RR A ; ACC.1 = B1, ACC.0 = B0
+00BB FC              167     MOV R4, A
+00BC 7404            168     MOV A, #BASEADDRESS_B
+00BE 2C              169     ADD A, R4; upper board for maximum address in B array
+00BF FC              170     MOV R4, A; save this board
+                     171     
+                     172     ; cycle for finding maximum
+00C0 752104          173     MOV INDEX_ADDR, #BASEADDRESS_B ; address of i
+00C3 752300          174     MOV MAX_B_ADDR, #00h; maximum value in array B
+00C6                 175     MAXIMUM_SEARCH_CYCLE_B:
+00C6 EC              176     MOV A, R4
+00C7 9521            177     SUBB A, INDEX_ADDR; check address <= R4
+00C9 4012            178     JC CALCULATE_AND
+00CB 852182          179     MOV DPL, INDEX_ADDR
+00CE E0              180     MOVX A, @DPTR; get B[i]
+00CF 9523            181     SUBB A, MAX_B_ADDR
+00D1 4003            182     JC NEXT_INDEX_B
+00D3 E0              183     MOVX A, @DPTR
+00D4 F523            184     MOV MAX_B_ADDR, A; new maximum value
+00D6                 185     NEXT_INDEX_B:
+00D6 E521            186     MOV A, INDEX_ADDR
+00D8 04              187     INC A
+00D9 F521            188     MOV INDEX_ADDR, A; increment i
+00DB 80E9            189     JMP MAXIMUM_SEARCH_CYCLE_B
+                     190     
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:24:46 PAGE     4
 
-00DE 80E9            191     JMP MAXIMUM_SEARCH_CYCLE_B
-                     192     
-00E0                 193     CALCULATE_AND:
-00E0 E522            194     MOV A, MAX_A_ADDR
-00E2 5523            195     ANL A, MAX_B_ADDR
-00E4 F520            196     MOV RES_ADDRESS, A
-                     197     
-00E6                 198     MOV_RESULT:
-00E6 E520            199     MOV A, RES_ADDRESS
-00E8 F9              200     MOV R1, A
-00E9 89C0            201     MOV P4, R1
-                     202     
-00EB                 203     HANDLE_END:
-                     204     ;end of interrupt process
-00EB 89C0            205     MOV P4, R1
-00ED 32              206     RETI
-                     207     END
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     5
+00DD                 191     CALCULATE_AND:
+00DD E522            192     MOV A, MAX_A_ADDR
+00DF 5523            193     ANL A, MAX_B_ADDR
+00E1 F520            194     MOV RES_ADDRESS, A
+                     195     
+00E3                 196     MOV_RESULT:
+00E3 E520            197     MOV A, RES_ADDRESS
+00E5 F9              198     MOV R1, A
+00E6 89C0            199     MOV P4, R1
+                     200     
+00E8                 201     HANDLE_END:
+                     202     ;end of interrupt process
+00E8 89C0            203     MOV P4, R1
+00EA 32              204     RETI
+                     205     END
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:24:46 PAGE     5
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -232,27 +230,27 @@ ACC. . . . . . . . . .  D ADDR   00E0H   A
 B. . . . . . . . . . .  D ADDR   00F0H   A   
 BASEADDRESS_A. . . . .  N NUMB   0000H   A   
 BASEADDRESS_B. . . . .  N NUMB   0004H   A   
-CALCULATE_AND. . . . .  C ADDR   00E0H   A   
+CALCULATE_AND. . . . .  C ADDR   00DDH   A   
 COUNT_CYCLE. . . . . .  C ADDR   007CH   A   
 COUNT_NEXT . . . . . .  C ADDR   0087H   A   
 DPL. . . . . . . . . .  D ADDR   0082H   A   
-FIND_MAX_ARRAY_B . . .  C ADDR   00B9H   A   
-HANDLE_END . . . . . .  C ADDR   00EBH   A   
+FIND_MAX_ARRAY_B . . .  C ADDR   00B6H   A   
+HANDLE_END . . . . . .  C ADDR   00E8H   A   
 HANDLE_INTERRUPT . . .  C ADDR   0010H   A   
 IE . . . . . . . . . .  D ADDR   00A8H   A   
 INDEX_ADDR . . . . . .  N NUMB   0021H   A   
 INIT . . . . . . . . .  C ADDR   0006H   A   
 MASK . . . . . . . . .  N NUMB   001FH   A   
-MAXIMUM_SEARCH_CYCLE_A  C ADDR   00A2H   A   
-MAXIMUM_SEARCH_CYCLE_B  C ADDR   00C9H   A   
+MAXIMUM_SEARCH_CYCLE_A  C ADDR   009FH   A   
+MAXIMUM_SEARCH_CYCLE_B  C ADDR   00C6H   A   
 MAX_A_ADDR . . . . . .  N NUMB   0022H   A   
 MAX_B_ADDR . . . . . .  N NUMB   0023H   A   
-MOV_RESULT . . . . . .  C ADDR   00E6H   A   
-NEXT_INDEX_A . . . . .  C ADDR   00B2H   A   
-NEXT_INDEX_B . . . . .  C ADDR   00D9H   A   
+MOV_RESULT . . . . . .  C ADDR   00E3H   A   
+NEXT_INDEX_A . . . . .  C ADDR   00AFH   A   
+NEXT_INDEX_B . . . . .  C ADDR   00D6H   A   
 P4 . . . . . . . . . .  N NUMB   00C0H   A   
 PROGRAMM_C_0 . . . . .  C ADDR   001BH   A   
-PROGRAMM_C_1 . . . . .  C ADDR   0095H   A   
+PROGRAMM_C_1 . . . . .  C ADDR   0092H   A   
 RES_ADDRESS. . . . . .  N NUMB   0020H   A   
 SEQ. . . . . . . . . .  N NUMB   0015H   A   
 TCON . . . . . . . . .  D ADDR   0088H   A   

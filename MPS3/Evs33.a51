@@ -20,7 +20,7 @@ MOVX A,@DPTR;
 MOV R2, A
 MOV DPTR, #8000h
 JB ACC.4, PROGRAMM_C_1
-; C = 0
+; if C = 0
 PROGRAMM_C_0:
 
 ANL A, #00000011b ; read A1A0
@@ -104,7 +104,7 @@ MOV R6, B; R6 = B = b7,a0,b6,a1,b5,a2,b4,a3
 SEQ  EQU 00010101b
 MASK EQU 00011111b
 
-MOV RES_ADDRESS,#00h
+MOV RES_ADDRESS,#00h ;init counter (use for this purpose result address)
 MOV A, R5
 COUNT_CYCLE:
 ANL A, #MASK
@@ -120,16 +120,14 @@ RRC A ; right shift of A, after which ACC.7 = 0 (because C = 0),
       ; ACC.n = ACC.(n + 1) n = 0...6 and new C = ACC.0 (previous ACC.0)
 	  ; we have made arithmetic shift where C equals previous ACC.0 
 MOV R6, A ;save new high bits
-MOV A, R5
+MOV A, R5 ; A = low bits of 16-bit value
 RRC A ; the same operation, but there prevous C is ACC.0 from high bits
+      ; so we shift our 16-bit value to right and fill higher bits by 0
 JZ MOV_RESULT
 MOV R5, A ; save new low bits
 JMP COUNT_CYCLE
 
-
-
-LJMP HANDLE_END
-; C = 1
+; if C = 1
 PROGRAMM_C_1:
 ; lets find maximum value in A array 
 ANL A, #00000011b ; read A1A0
@@ -138,9 +136,9 @@ MOV A, #BASEADDRESS_A
 ADD A, R3; upper board for maximum address in A array
 MOV R3, A; save this board
 
-INDEX_ADDR EQU 21h
-MAX_A_ADDR EQU 22h
-MAX_B_ADDR EQU 23h
+INDEX_ADDR EQU 21h ; address for storing index
+MAX_A_ADDR EQU 22h ; address of maximum for A array
+MAX_B_ADDR EQU 23h ; address of maximum for A array
 ; cycle for finding maximum
 MOV INDEX_ADDR, #BASEADDRESS_A ; address of i
 MOV MAX_A_ADDR, #00h; maximum value in array A
