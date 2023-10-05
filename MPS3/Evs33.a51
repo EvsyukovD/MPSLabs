@@ -10,8 +10,11 @@ WAIT_INTERRUPT:
 MOV P4, A;
 SJMP WAIT_INTERRUPT
 HANDLE_INTERRUPT:
+; r1, r2 - buf registers
+
 BASEADDRESS_A EQU 00h
 BASEADDRESS_B EQU 04h
+RES_ADDRESS EQU 20h
 MOV DPTR,#7FFAh
 MOVX A,@DPTR;
 MOV R2, A
@@ -30,7 +33,7 @@ MOV R3, A ; A[A1A0]
 MOV A, R2 ;read [C,B1,B0,A1,A0]
 ANL A, #00001100b; read B1,B0
 RR A 
-RR A ; get ACC.1 = B1, ACC.0 = B0
+RR A ; ACC.1 = B1, ACC.0 = B0
 MOV R4, #BASEADDRESS_B
 ADD A, R4 ; address of element in B array
 MOV DPL, A
@@ -100,16 +103,16 @@ MOV R6, B; R6 = B = b7,a0,b6,a1,b5,a2,b4,a3
 ; 16-bit value R6,R5
 SEQ  EQU 00010101b
 MASK EQU 00011111b
-TMP_ADDRESS EQU 20h
-MOV 20h,#00h
+
+MOV RES_ADDRESS,#00h
 MOV A, R5
 COUNT_CYCLE:
 ANL A, #MASK
 SUBB A, #SEQ ; check that last bits equal bit sequence
 JNZ COUNT_NEXT
-MOV A, 20h
+MOV A, RES_ADDRESS
 INC A
-MOV 20h, A
+MOV RES_ADDRESS, A
 COUNT_NEXT:
 CLR C; C = 0
 MOV A, R6 ; A = high bits of 16-bit value
@@ -123,17 +126,82 @@ JZ MOV_RESULT
 MOV R5, A ; save new low bits
 JMP COUNT_CYCLE
 
-MOV_RESULT:
-MOV A, 20h
-MOV R1, A
-MOV P4, R1
+
 
 LJMP HANDLE_END
 ; C = 1
 PROGRAMM_C_1:
-; r1, r2 - buf registers
-;end of interrupt process
+; lets find maximum value in A array 
+ANL A, #00000011b ; read A1A0
+MOV R3, A
+MOV A, #BASEADDRESS_A
+ADD A, R3; upper board for maximum address in A array
+MOV R3, A; save this board
+
+INDEX_ADDR EQU 21h
+MAX_A_ADDR EQU 22h
+MAX_B_ADDR EQU 23h
+; cycle for finding maximum
+MOV INDEX_ADDR, #BASEADDRESS_A ; address of i
+MOV MAX_A_ADDR, #00h; maximum value in array A
+MAXIMUM_SEARCH_CYCLE_A:
+MOV A, R3
+SUBB A, INDEX_ADDR; check address <= R3
+JC FIND_MAX_ARRAY_B
+MOV DPL, INDEX_ADDR
+MOVX A, @DPTR; get A[i]
+SUBB A, MAX_A_ADDR
+JC NEXT_INDEX_A
+MOVX A, @DPTR
+MOV MAX_A_ADDR, A; new maximum value
+NEXT_INDEX_A:
+MOV A, INDEX_ADDR
+INC A
+MOV INDEX_ADDR, A; increment i
+JMP MAXIMUM_SEARCH_CYCLE_A
+
+FIND_MAX_ARRAY_B:
+; lets find maximum value in B array
+MOV A, R2
+ANL A, #00001100b; read B1, B0
+RR A
+RR A ; ACC.1 = B1, ACC.0 = B0
+MOV R4, A
+MOV A, #BASEADDRESS_B
+ADD A, R4; upper board for maximum address in B array
+MOV R4, A; save this board
+
+; cycle for finding maximum
+MOV INDEX_ADDR, #BASEADDRESS_B ; address of i
+MOV MAX_B_ADDR, #00h; maximum value in array B
+MAXIMUM_SEARCH_CYCLE_B:
+MOV A, R4
+SUBB A, INDEX_ADDR; check address <= R4
+JC CALCULATE_AND
+MOV DPL, INDEX_ADDR
+MOVX A, @DPTR; get B[i]
+SUBB A, MAX_B_ADDR
+JC NEXT_INDEX_B
+MOVX A, @DPTR
+MOV MAX_B_ADDR, A; new maximum value
+NEXT_INDEX_B:
+MOV A, INDEX_ADDR
+INC A
+MOV INDEX_ADDR, A; increment i
+JMP MAXIMUM_SEARCH_CYCLE_B
+
+CALCULATE_AND:
+MOV A, MAX_A_ADDR
+ANL A, MAX_B_ADDR
+MOV RES_ADDRESS, A
+
+MOV_RESULT:
+MOV A, RES_ADDRESS
+MOV R1, A
+MOV P4, R1
+
 HANDLE_END:
+;end of interrupt process
 MOV P4, R1
 RETI
 END

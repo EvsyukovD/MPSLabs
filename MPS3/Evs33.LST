@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 20:17:09 PAGE     1
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -19,165 +19,244 @@ LOC  OBJ            LINE     SOURCE
 000C F5C0             10     MOV P4, A;
 000E 80FC             11     SJMP WAIT_INTERRUPT
 0010                  12     HANDLE_INTERRUPT:
-  0000                13     BASEADDRESS_A EQU 00h
-  0004                14     BASEADDRESS_B EQU 04h
-0010 907FFA           15     MOV DPTR,#7FFAh
-0013 E0               16     MOVX A,@DPTR;
-0014 FA               17     MOV R2, A
-0015 908000           18     MOV DPTR, #8000h
-0018 20E47F           19     JB ACC.4, PROGRAMM_C_1
-                      20     ; C = 0
-001B                  21     PROGRAMM_C_0:
-                      22     
-001B 5403             23     ANL A, #00000011b ; read A1A0
-001D 7B00             24     MOV R3, #BASEADDRESS_A
-001F 2B               25     ADD A, R3 ; address of element in A array 
-0020 F582             26     MOV DPL, A
-0022 E0               27     MOVX A, @DPTR
-0023 FB               28     MOV R3, A ; A[A1A0]
-                      29     
-0024 EA               30     MOV A, R2 ;read [C,B1,B0,A1,A0]
-0025 540C             31     ANL A, #00001100b; read B1,B0
-0027 03               32     RR A 
-0028 03               33     RR A ; get ACC.1 = B1, ACC.0 = B0
-0029 7C04             34     MOV R4, #BASEADDRESS_B
-002B 2C               35     ADD A, R4 ; address of element in B array
-002C F582             36     MOV DPL, A
-002E E0               37     MOVX A, @DPTR
-002F FC               38     MOV R4, A ; B[B1B0]
-                      39     
-0030 EB               40     MOV A, R3
-                      41     ; R4 = b, R3 = a
-                      42     ; build 16-bit value in R5 (low 8 bit) and R6(high 8 bit)
-                      43     ; build low bits for R5 in B
-0031 A2E7             44     MOV C, ACC.7
-0033 92F0             45     MOV B.0, C
-                      46     
-0035 A2E6             47     MOV C, ACC.6
-0037 92F2             48     MOV B.2, C
+                      13     ; r1, r2 - buf registers
+                      14     
+  0000                15     BASEADDRESS_A EQU 00h
+  0004                16     BASEADDRESS_B EQU 04h
+  0020                17     RES_ADDRESS EQU 20h
+0010 907FFA           18     MOV DPTR,#7FFAh
+0013 E0               19     MOVX A,@DPTR;
+0014 FA               20     MOV R2, A
+0015 908000           21     MOV DPTR, #8000h
+0018 20E47A           22     JB ACC.4, PROGRAMM_C_1
+                      23     ; C = 0
+001B                  24     PROGRAMM_C_0:
+                      25     
+001B 5403             26     ANL A, #00000011b ; read A1A0
+001D 7B00             27     MOV R3, #BASEADDRESS_A
+001F 2B               28     ADD A, R3 ; address of element in A array 
+0020 F582             29     MOV DPL, A
+0022 E0               30     MOVX A, @DPTR
+0023 FB               31     MOV R3, A ; A[A1A0]
+                      32     
+0024 EA               33     MOV A, R2 ;read [C,B1,B0,A1,A0]
+0025 540C             34     ANL A, #00001100b; read B1,B0
+0027 03               35     RR A 
+0028 03               36     RR A ; ACC.1 = B1, ACC.0 = B0
+0029 7C04             37     MOV R4, #BASEADDRESS_B
+002B 2C               38     ADD A, R4 ; address of element in B array
+002C F582             39     MOV DPL, A
+002E E0               40     MOVX A, @DPTR
+002F FC               41     MOV R4, A ; B[B1B0]
+                      42     
+0030 EB               43     MOV A, R3
+                      44     ; R4 = b, R3 = a
+                      45     ; build 16-bit value in R5 (low 8 bit) and R6(high 8 bit)
+                      46     ; build low bits for R5 in B
+0031 A2E7             47     MOV C, ACC.7
+0033 92F0             48     MOV B.0, C
                       49     
-0039 A2E5             50     MOV C, ACC.5
-003B 92F4             51     MOV B.4, C
+0035 A2E6             50     MOV C, ACC.6
+0037 92F2             51     MOV B.2, C
                       52     
-003D A2E4             53     MOV C, ACC.4
-003F 92F6             54     MOV B.6, C
+0039 A2E5             53     MOV C, ACC.5
+003B 92F4             54     MOV B.4, C
                       55     
-0041 EC               56     MOV A, R4
-                      57     
-0042 A2E0             58     MOV C, ACC.0
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 20:17:09 PAGE     2
+003D A2E4             56     MOV C, ACC.4
+003F 92F6             57     MOV B.6, C
+                      58     
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     2
 
-0044 92F1             59     MOV B.1, C
+0041 EC               59     MOV A, R4
                       60     
-0046 A2E1             61     MOV C, ACC.1
-0048 92F3             62     MOV B.3, C
+0042 A2E0             61     MOV C, ACC.0
+0044 92F1             62     MOV B.1, C
                       63     
-004A A2E2             64     MOV C, ACC.2
-004C 92F5             65     MOV B.5, C
+0046 A2E1             64     MOV C, ACC.1
+0048 92F3             65     MOV B.3, C
                       66     
-004E A2E3             67     MOV C, ACC.3
-0050 92F7             68     MOV B.7, C
+004A A2E2             67     MOV C, ACC.2
+004C 92F5             68     MOV B.5, C
                       69     
-0052 ADF0             70     MOV R5, B ; R5 = B = b3,a4,b2,a5,b1,a6,b0,a7
-                      71     ;build high bit for R6 in B
-0054 EB               72     MOV A, R3
-0055 A2E3             73     MOV C, ACC.3
-0057 92F0             74     MOV B.0, C
-                      75     
-0059 A2E2             76     MOV C, ACC.2
-005B 92F2             77     MOV B.2, C
+004E A2E3             70     MOV C, ACC.3
+0050 92F7             71     MOV B.7, C
+                      72     
+0052 ADF0             73     MOV R5, B ; R5 = B = b3,a4,b2,a5,b1,a6,b0,a7
+                      74     ;build high bit for R6 in B
+0054 EB               75     MOV A, R3
+0055 A2E3             76     MOV C, ACC.3
+0057 92F0             77     MOV B.0, C
                       78     
-005D A2E1             79     MOV C, ACC.1
-005F 92F4             80     MOV B.4, C
+0059 A2E2             79     MOV C, ACC.2
+005B 92F2             80     MOV B.2, C
                       81     
-0061 A2E0             82     MOV C, ACC.0
-0063 92F6             83     MOV B.6, C
+005D A2E1             82     MOV C, ACC.1
+005F 92F4             83     MOV B.4, C
                       84     
-0065 EC               85     MOV A, R4
-                      86     
-0066 A2E4             87     MOV C, ACC.4
-0068 92F1             88     MOV B.1, C
+0061 A2E0             85     MOV C, ACC.0
+0063 92F6             86     MOV B.6, C
+                      87     
+0065 EC               88     MOV A, R4
                       89     
-006A A2E5             90     MOV C, ACC.5
-006C 92F3             91     MOV B.3, C
+0066 A2E4             90     MOV C, ACC.4
+0068 92F1             91     MOV B.1, C
                       92     
-006E A2E6             93     MOV C, ACC.6
-0070 92F5             94     MOV B.5, C
+006A A2E5             93     MOV C, ACC.5
+006C 92F3             94     MOV B.3, C
                       95     
-0072 A2E7             96     MOV C, ACC.7
-0074 92F7             97     MOV B.7, C
+006E A2E6             96     MOV C, ACC.6
+0070 92F5             97     MOV B.5, C
                       98     
-0076 AEF0             99     MOV R6, B; R6 = B = b7,a0,b6,a1,b5,a2,b4,a3
-                     100     ; 16-bit value R6,R5
-  0015               101     SEQ  EQU 00010101b
-  001F               102     MASK EQU 00011111b
-  0020               103     TMP_ADDRESS EQU 20h
-0078 752000          104     MOV 20h,#00h
-007B ED              105     MOV A, R5
-007C                 106     COUNT_CYCLE:
-007C 541F            107     ANL A, #MASK
-007E 9415            108     SUBB A, #SEQ ; check that last bits equal bit sequence
-0080 7005            109     JNZ COUNT_NEXT
-0082 E520            110     MOV A, 20h
-0084 04              111     INC A
-0085 F520            112     MOV 20h, A
-0087                 113     COUNT_NEXT:
-0087 C3              114     CLR C; C = 0
-0088 EE              115     MOV A, R6 ; A = high bits of 16-bit value
-0089 13              116     RRC A ; right shift of A, after which ACC.7 = 0 (because C = 0), 
-                     117           ; ACC.n = ACC.(n + 1) n = 0...6 and new C = ACC.0 (previous ACC.0)
-                     118               ; we have made arithmetic shift where C equals previous ACC.0 
-008A FE              119     MOV R6, A ;save new high bits
-008B ED              120     MOV A, R5
-008C 13              121     RRC A ; the same operation, but there prevous C is ACC.0 from high bits
-008D 6003            122     JZ MOV_RESULT
-008F FD              123     MOV R5, A ; save new low bits
-0090 80EA            124     JMP COUNT_CYCLE
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 20:17:09 PAGE     3
+0072 A2E7             99     MOV C, ACC.7
+0074 92F7            100     MOV B.7, C
+                     101     
+0076 AEF0            102     MOV R6, B; R6 = B = b7,a0,b6,a1,b5,a2,b4,a3
+                     103     ; 16-bit value R6,R5
+  0015               104     SEQ  EQU 00010101b
+  001F               105     MASK EQU 00011111b
+                     106     
+0078 752000          107     MOV RES_ADDRESS,#00h
+007B ED              108     MOV A, R5
+007C                 109     COUNT_CYCLE:
+007C 541F            110     ANL A, #MASK
+007E 9415            111     SUBB A, #SEQ ; check that last bits equal bit sequence
+0080 7005            112     JNZ COUNT_NEXT
+0082 E520            113     MOV A, RES_ADDRESS
+0084 04              114     INC A
+0085 F520            115     MOV RES_ADDRESS, A
+0087                 116     COUNT_NEXT:
+0087 C3              117     CLR C; C = 0
+0088 EE              118     MOV A, R6 ; A = high bits of 16-bit value
+0089 13              119     RRC A ; right shift of A, after which ACC.7 = 0 (because C = 0), 
+                     120           ; ACC.n = ACC.(n + 1) n = 0...6 and new C = ACC.0 (previous ACC.0)
+                     121               ; we have made arithmetic shift where C equals previous ACC.0 
+008A FE              122     MOV R6, A ;save new high bits
+008B ED              123     MOV A, R5
+008C 13              124     RRC A ; the same operation, but there prevous C is ACC.0 from high bits
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     3
 
-                     125     
-0092                 126     MOV_RESULT:
-0092 E520            127     MOV A, 20h
-0094 F9              128     MOV R1, A
-0095 89C0            129     MOV P4, R1
+008D 6057            125     JZ MOV_RESULT
+008F FD              126     MOV R5, A ; save new low bits
+0090 80EA            127     JMP COUNT_CYCLE
+                     128     
+                     129     
                      130     
-0097 02009A          131     LJMP HANDLE_END
+0092 0200EB          131     LJMP HANDLE_END
                      132     ; C = 1
-009A                 133     PROGRAMM_C_1:
-                     134     ; r1, r2 - buf registers
-                     135     ;end of interrupt process
-009A                 136     HANDLE_END:
-009A 89C0            137     MOV P4, R1
-009C 32              138     RETI
-                     139     END
-A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 20:17:09 PAGE     4
+0095                 133     PROGRAMM_C_1:
+                     134     ; lets find maximum value in A array 
+0095 5403            135     ANL A, #00000011b ; read A1A0
+0097 FB              136     MOV R3, A
+0098 7400            137     MOV A, #BASEADDRESS_A
+009A 2B              138     ADD A, R3; upper board for maximum address in A array
+009B FB              139     MOV R3, A; save this board
+                     140     
+  0021               141     INDEX_ADDR EQU 21h
+  0022               142     MAX_A_ADDR EQU 22h
+  0023               143     MAX_B_ADDR EQU 23h
+                     144     ; cycle for finding maximum
+009C 752100          145     MOV INDEX_ADDR, #BASEADDRESS_A ; address of i
+009F 752200          146     MOV MAX_A_ADDR, #00h; maximum value in array A
+00A2                 147     MAXIMUM_SEARCH_CYCLE_A:
+00A2 EB              148     MOV A, R3
+00A3 9521            149     SUBB A, INDEX_ADDR; check address <= R3
+00A5 4012            150     JC FIND_MAX_ARRAY_B
+00A7 852182          151     MOV DPL, INDEX_ADDR
+00AA E0              152     MOVX A, @DPTR; get A[i]
+00AB 9522            153     SUBB A, MAX_A_ADDR
+00AD 4003            154     JC NEXT_INDEX_A
+00AF E0              155     MOVX A, @DPTR
+00B0 F522            156     MOV MAX_A_ADDR, A; new maximum value
+00B2                 157     NEXT_INDEX_A:
+00B2 E521            158     MOV A, INDEX_ADDR
+00B4 04              159     INC A
+00B5 F521            160     MOV INDEX_ADDR, A; increment i
+00B7 80E9            161     JMP MAXIMUM_SEARCH_CYCLE_A
+                     162     
+00B9                 163     FIND_MAX_ARRAY_B:
+                     164     ; lets find maximum value in B array
+00B9 EA              165     MOV A, R2
+00BA 540C            166     ANL A, #00001100b; read B1, B0
+00BC 03              167     RR A
+00BD 03              168     RR A ; ACC.1 = B1, ACC.0 = B0
+00BE FC              169     MOV R4, A
+00BF 7404            170     MOV A, #BASEADDRESS_B
+00C1 2C              171     ADD A, R4; upper board for maximum address in B array
+00C2 FC              172     MOV R4, A; save this board
+                     173     
+                     174     ; cycle for finding maximum
+00C3 752104          175     MOV INDEX_ADDR, #BASEADDRESS_B ; address of i
+00C6 752300          176     MOV MAX_B_ADDR, #00h; maximum value in array B
+00C9                 177     MAXIMUM_SEARCH_CYCLE_B:
+00C9 EC              178     MOV A, R4
+00CA 9521            179     SUBB A, INDEX_ADDR; check address <= R4
+00CC 4012            180     JC CALCULATE_AND
+00CE 852182          181     MOV DPL, INDEX_ADDR
+00D1 E0              182     MOVX A, @DPTR; get B[i]
+00D2 9523            183     SUBB A, MAX_B_ADDR
+00D4 4003            184     JC NEXT_INDEX_B
+00D6 E0              185     MOVX A, @DPTR
+00D7 F523            186     MOV MAX_B_ADDR, A; new maximum value
+00D9                 187     NEXT_INDEX_B:
+00D9 E521            188     MOV A, INDEX_ADDR
+00DB 04              189     INC A
+00DC F521            190     MOV INDEX_ADDR, A; increment i
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     4
+
+00DE 80E9            191     JMP MAXIMUM_SEARCH_CYCLE_B
+                     192     
+00E0                 193     CALCULATE_AND:
+00E0 E522            194     MOV A, MAX_A_ADDR
+00E2 5523            195     ANL A, MAX_B_ADDR
+00E4 F520            196     MOV RES_ADDRESS, A
+                     197     
+00E6                 198     MOV_RESULT:
+00E6 E520            199     MOV A, RES_ADDRESS
+00E8 F9              200     MOV R1, A
+00E9 89C0            201     MOV P4, R1
+                     202     
+00EB                 203     HANDLE_END:
+                     204     ;end of interrupt process
+00EB 89C0            205     MOV P4, R1
+00ED 32              206     RETI
+                     207     END
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 21:04:50 PAGE     5
 
 SYMBOL TABLE LISTING
 ------ ----- -------
 
 
-N A M E             T Y P E  V A L U E   ATTRIBUTES
+N A M E                 T Y P E  V A L U E   ATTRIBUTES
 
-ACC. . . . . . . .  D ADDR   00E0H   A   
-B. . . . . . . . .  D ADDR   00F0H   A   
-BASEADDRESS_A. . .  N NUMB   0000H   A   
-BASEADDRESS_B. . .  N NUMB   0004H   A   
-COUNT_CYCLE. . . .  C ADDR   007CH   A   
-COUNT_NEXT . . . .  C ADDR   0087H   A   
-DPL. . . . . . . .  D ADDR   0082H   A   
-HANDLE_END . . . .  C ADDR   009AH   A   
-HANDLE_INTERRUPT .  C ADDR   0010H   A   
-IE . . . . . . . .  D ADDR   00A8H   A   
-INIT . . . . . . .  C ADDR   0006H   A   
-MASK . . . . . . .  N NUMB   001FH   A   
-MOV_RESULT . . . .  C ADDR   0092H   A   
-P4 . . . . . . . .  N NUMB   00C0H   A   
-PROGRAMM_C_0 . . .  C ADDR   001BH   A   
-PROGRAMM_C_1 . . .  C ADDR   009AH   A   
-SEQ. . . . . . . .  N NUMB   0015H   A   
-TCON . . . . . . .  D ADDR   0088H   A   
-TMP_ADDRESS. . . .  N NUMB   0020H   A   
-WAIT_INTERRUPT . .  C ADDR   000CH   A   
+ACC. . . . . . . . . .  D ADDR   00E0H   A   
+B. . . . . . . . . . .  D ADDR   00F0H   A   
+BASEADDRESS_A. . . . .  N NUMB   0000H   A   
+BASEADDRESS_B. . . . .  N NUMB   0004H   A   
+CALCULATE_AND. . . . .  C ADDR   00E0H   A   
+COUNT_CYCLE. . . . . .  C ADDR   007CH   A   
+COUNT_NEXT . . . . . .  C ADDR   0087H   A   
+DPL. . . . . . . . . .  D ADDR   0082H   A   
+FIND_MAX_ARRAY_B . . .  C ADDR   00B9H   A   
+HANDLE_END . . . . . .  C ADDR   00EBH   A   
+HANDLE_INTERRUPT . . .  C ADDR   0010H   A   
+IE . . . . . . . . . .  D ADDR   00A8H   A   
+INDEX_ADDR . . . . . .  N NUMB   0021H   A   
+INIT . . . . . . . . .  C ADDR   0006H   A   
+MASK . . . . . . . . .  N NUMB   001FH   A   
+MAXIMUM_SEARCH_CYCLE_A  C ADDR   00A2H   A   
+MAXIMUM_SEARCH_CYCLE_B  C ADDR   00C9H   A   
+MAX_A_ADDR . . . . . .  N NUMB   0022H   A   
+MAX_B_ADDR . . . . . .  N NUMB   0023H   A   
+MOV_RESULT . . . . . .  C ADDR   00E6H   A   
+NEXT_INDEX_A . . . . .  C ADDR   00B2H   A   
+NEXT_INDEX_B . . . . .  C ADDR   00D9H   A   
+P4 . . . . . . . . . .  N NUMB   00C0H   A   
+PROGRAMM_C_0 . . . . .  C ADDR   001BH   A   
+PROGRAMM_C_1 . . . . .  C ADDR   0095H   A   
+RES_ADDRESS. . . . . .  N NUMB   0020H   A   
+SEQ. . . . . . . . . .  N NUMB   0015H   A   
+TCON . . . . . . . . .  D ADDR   0088H   A   
+WAIT_INTERRUPT . . . .  C ADDR   000CH   A   
 
 
 REGISTER BANK(S) USED: 0 
