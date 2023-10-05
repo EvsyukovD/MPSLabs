@@ -1,0 +1,118 @@
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 16:03:04 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN Evs33.OBJ
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE Evs33.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0H
+0000 020006            2     LJMP INIT
+0003                   3     ORG 03H
+0003 020010            4     LJMP HANDLE_INTERRUPT
+0006                   5     INIT:
+  00C0                 6     P4 EQU 0C0h
+0006 75A881            7     MOV IE,#10000001b; enable int0
+0009 758801            8     MOV TCON, #1;1/0
+000C                   9     WAIT_INTERRUPT:
+000C F5C0             10     MOV P4, A;
+000E 80FC             11     SJMP WAIT_INTERRUPT
+0010                  12     HANDLE_INTERRUPT:
+  0000                13     BASEADDRESS_A EQU 00h
+  0004                14     BASEADDRESS_B EQU 04h
+0010 907FFA           15     MOV DPTR,#7FFAh
+0013 E0               16     MOVX A,@DPTR;
+0014 FA               17     MOV R2, A
+0015 20E43F           18     JB ACC.4, PROGRAMM_C_1
+0018 908000           19     MOV DPTR, #8000h
+                      20     ; C = 0
+001B                  21     PROGRAMM_C_0:
+001B 5403             22     ANL A, #00000011b ; read A1A0
+001D 7B00             23     MOV R3, #BASEADDRESS_A
+001F 2B               24     ADD A, R3 ; address of element in A array 
+0020 F582             25     MOV DPL, A
+0022 E0               26     MOVX A, @DPTR
+0023 FB               27     MOV R3, A ; A[A1A0]
+                      28     
+0024 EA               29     MOV A, R2 ;read C,B1,B0,A1,A0
+0025 540C             30     ANL A, #00001100b; read B1,B0
+0027 03               31     RR A 
+0028 03               32     RR A ; get ACC.1 = B1, ACC.0 = B0
+0029 7C04             33     MOV R4, #BASEADDRESS_B
+002B 2C               34     ADD A, R4 ; address of element in B array
+002C 8C82             35     MOV DPL, R4
+002E E0               36     MOVX A, @DPTR
+002F FC               37     MOV R4, A ; B[B1B0]
+                      38     
+0030 EB               39     MOV A, R3
+                      40     ; R4 = b, R3 = a
+                      41     ; build 16-bit value in R5 (low 8 bit) and R6(high 8 bit)
+                      42     ; build R5 = B
+0031 A2E7             43     MOV C, ACC.7
+0033 92F0             44     MOV B.0, C
+                      45     
+0035 A2E6             46     MOV C, ACC.6
+0037 92F2             47     MOV B.2, C
+                      48     
+0039 A2E5             49     MOV C, ACC.5
+003B 92F4             50     MOV B.4, C
+                      51     
+003D A2E4             52     MOV C, ACC.4
+003F 92F6             53     MOV B.6, C
+                      54     
+0041 EC               55     MOV A, R4
+                      56     
+0042 A2E0             57     MOV C, ACC.0
+0044 92F1             58     MOV B.1, C
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 16:03:04 PAGE     2
+
+                      59     
+0046 A2E1             60     MOV C, ACC.1
+0048 92F3             61     MOV B.3, C
+                      62     
+004A A2E2             63     MOV C, ACC.2
+004C 92F5             64     MOV B.5, C
+                      65     
+004E A2E3             66     MOV C, ACC.3
+0050 92F7             67     MOV B.7, C
+                      68     
+0052 ADF0             69     MOV R5, B
+                      70     
+0054 020057           71     LJMP HANDLE_END
+                      72     ; C = 1
+0057                  73     PROGRAMM_C_1:
+                      74     ; r1, r2 - buf registers
+                      75     ;end of interrupt process
+0057                  76     HANDLE_END:
+0057 89C0             77     MOV P4, R1
+0059 32               78     RETI
+                      79     END
+A51 MACRO ASSEMBLER  EVS33                                                                10/05/2023 16:03:04 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+ACC. . . . . . . .  D ADDR   00E0H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+BASEADDRESS_A. . .  N NUMB   0000H   A   
+BASEADDRESS_B. . .  N NUMB   0004H   A   
+DPL. . . . . . . .  D ADDR   0082H   A   
+HANDLE_END . . . .  C ADDR   0057H   A   
+HANDLE_INTERRUPT .  C ADDR   0010H   A   
+IE . . . . . . . .  D ADDR   00A8H   A   
+INIT . . . . . . .  C ADDR   0006H   A   
+P4 . . . . . . . .  N NUMB   00C0H   A   
+PROGRAMM_C_0 . . .  C ADDR   001BH   A   
+PROGRAMM_C_1 . . .  C ADDR   0057H   A   
+TCON . . . . . . .  D ADDR   0088H   A   
+WAIT_INTERRUPT . .  C ADDR   000CH   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)

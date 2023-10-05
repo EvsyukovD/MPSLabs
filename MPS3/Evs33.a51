@@ -1,0 +1,106 @@
+ORG 0H
+LJMP INIT
+ORG 03H
+LJMP HANDLE_INTERRUPT
+INIT:
+P4 EQU 0C0h
+MOV IE,#10000001b; enable int0
+MOV TCON, #1;1/0
+WAIT_INTERRUPT:
+MOV P4, A;
+SJMP WAIT_INTERRUPT
+HANDLE_INTERRUPT:
+BASEADDRESS_A EQU 00h
+BASEADDRESS_B EQU 04h
+MOV DPTR,#7FFAh
+MOVX A,@DPTR;
+MOV R2, A
+JB ACC.4, PROGRAMM_C_1
+MOV DPTR, #8000h
+; C = 0
+PROGRAMM_C_0:
+ANL A, #00000011b ; read A1A0
+MOV R3, #BASEADDRESS_A
+ADD A, R3 ; address of element in A array 
+MOV DPL, A
+MOVX A, @DPTR
+MOV R3, A ; A[A1A0]
+
+MOV A, R2 ;read C,B1,B0,A1,A0
+ANL A, #00001100b; read B1,B0
+RR A 
+RR A ; get ACC.1 = B1, ACC.0 = B0
+MOV R4, #BASEADDRESS_B
+ADD A, R4 ; address of element in B array
+MOV DPL, R4
+MOVX A, @DPTR
+MOV R4, A ; B[B1B0]
+
+MOV A, R3
+; R4 = b, R3 = a
+; build 16-bit value in R5 (low 8 bit) and R6(high 8 bit)
+; build low bits for R5 in B
+MOV C, ACC.7
+MOV B.0, C
+
+MOV C, ACC.6
+MOV B.2, C
+
+MOV C, ACC.5
+MOV B.4, C
+
+MOV C, ACC.4
+MOV B.6, C
+
+MOV A, R4
+
+MOV C, ACC.0
+MOV B.1, C
+
+MOV C, ACC.1
+MOV B.3, C
+
+MOV C, ACC.2
+MOV B.5, C
+
+MOV C, ACC.3
+MOV B.7, C
+
+MOV R5, B
+;build high bit for R6 in B
+
+MOV C, ACC.3
+MOV B.0, C
+
+MOV C, ACC.2
+MOV B.2, C
+
+MOV C, ACC.1
+MOV B.4, C
+
+MOV C, ACC.0
+MOV B.6, C
+
+MOV A, R4
+
+MOV C, ACC.4
+MOV B.1, C
+
+MOV C, ACC.5
+MOV B.3, C
+
+MOV C, ACC.6
+MOV B.5, C
+
+MOV C, ACC.7
+MOV B.7, C
+
+LJMP HANDLE_END
+; C = 1
+PROGRAMM_C_1:
+; r1, r2 - buf registers
+;end of interrupt process
+HANDLE_END:
+MOV P4, R1
+RETI
+END

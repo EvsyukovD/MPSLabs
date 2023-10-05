@@ -2,9 +2,7 @@
 ORG 0000h;
 BASEADDRESS EQU 0011h;11h
 RELATIVEADDRESS EQU 0004h;04h
-LJMP MAIN
-
-MAIN:
+	
 ; init values for timer in every case: 1...5 sec wait
 MOV 40H, #5 ;0;  make "table" for number of seconds for each tuple (x3,x2,x1,x0)
 MOV 41H, #2 ;1

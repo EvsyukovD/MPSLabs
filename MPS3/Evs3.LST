@@ -1,0 +1,161 @@
+A51 MACRO ASSEMBLER  EVS3                                                                 10/05/2023 14:52:57 PAGE     1
+
+
+MACRO ASSEMBLER A51 V8.02b
+OBJECT MODULE PLACED IN Evs3.OBJ
+ASSEMBLER INVOKED BY: C:\Keil_v5\C51\BIN\A51.EXE Evs3.a51 SET(SMALL) DEBUG EP
+
+LOC  OBJ            LINE     SOURCE
+
+0000                   1     ORG 0H
+0000 020006            2     LJMP PROGRAM
+0003                   3     ORG 03H
+0003 020010            4     LJMP OBRABOTKA
+0006                   5     PROGRAM:
+  00C0                 6     P4 EQU 0C0h
+0006 75A881            7     MOV IE,#10000001b; enable int0
+0009 758801            8     MOV TCON, #1;1/0
+000C                   9     PROGRAM2:
+000C F5C0             10     MOV P4, A;
+000E 80FC             11     SJMP PROGRAM2
+0010                  12     OBRABOTKA:
+0010 907FFA           13     MOV DPTR,#7FFAh
+0013 E0               14     MOVX A,@DPTR;
+0014 F520             15     MOV 20H, A;command in 20h
+0016 908000           16     MOV DPTR,#8000h
+0019 300301           17     JNB 3,A1;perehod esli ne 1
+001C A3               18     INC DPTR;esli 1, to inc
+001D 300402           19     A1:JNB 4, A2;perehod esli ne 2
+0020 A3               20     INC DPTR;esli 1, to inc x2
+0021 A3               21     INC DPTR
+0022                  22     A2:
+0022 E0               23     MOVX A,@DPTR;zapis v A operand A
+0023 200037           24     JB 0,LOG;perehod esli 1, to logicheskaya
+                      25     
+0026                  26     ARIFM:
+0026 7A00             27     MOV R2, #0; for number of 1 in A
+0028 7B00             28     MOV R3, #0; for number of 1 in B
+                      29     
+                      30     ;kolvo of 1 in a0,a2,a5,a7
+002A 30E001           31     JNB ACC.0,a0_is_null
+002D 0A               32     INC R2
+002E                  33     a0_is_null:
+002E 30E201           34     JNB ACC.2,a2_is_null
+0031 0A               35     INC R2
+0032                  36     a2_is_null:
+0032 30E501           37     JNB ACC.5,a5_is_null
+0035 0A               38     INC R2
+0036                  39     a5_is_null:
+0036 30E701           40     JNB ACC.7,a7_is_null
+0039 0A               41     INC R2
+003A                  42     a7_is_null:
+                      43     
+                      44     ;LOAD B
+003A 908004           45     MOV DPTR,#8004h
+003D 300101           46     JNB 1,B1
+0040 A3               47     INC DPTR
+0041 300202           48     B1:JNB 2, B2
+0044 A3               49     INC DPTR
+0045 A3               50     INC DPTR;
+0046                  51     B2:
+0046 E0               52     MOVX A,@DPTR;v A operand B
+                      53     
+                      54     ;kolvo of 1 in b1,b3,b4,b6
+0047 30E101           55     JNB ACC.1,b1_is_null
+004A 0B               56     INC R3
+004B                  57     b1_is_null:
+004B 30E301           58     JNB ACC.3,b3_is_null
+A51 MACRO ASSEMBLER  EVS3                                                                 10/05/2023 14:52:57 PAGE     2
+
+004E 0B               59     INC R3
+004F                  60     b3_is_null:
+004F 30E401           61     JNB ACC.4,b4_is_null
+0052 0B               62     INC R3
+0053                  63     b4_is_null:
+0053 30E601           64     JNB ACC.6,b6_is_null
+0056 0B               65     INC R3
+0057                  66     b6_is_null:
+                      67     
+                      68     ;ARIFM RESULT
+0057 C3               69     CLR C
+0058 EA               70     MOV A, R2
+0059 2B               71     ADD A, R3
+005A 02008D           72     LJMP OP_END
+                      73     
+005D                  74     LOG:
+                      75     ;LOAD ADRES OF B
+005D FD               76     MOV R5, A; v R5 operand A
+005E 7400             77     MOV A, #0;clear A
+0060 A202             78     MOV C, 2
+0062 92E1             79     MOV ACC.1, C
+0064 A201             80     MOV C, 1
+0066 92E0             81     MOV ACC.0, C; in A adress of operand B
+0068 F5F0             82     MOV B, A; B = adress of operand B
+006A AEF0             83     MOV R6, B; R6 = adres_of_B
+                      84     
+                      85     ;LOAD B
+006C 908004           86     MOV DPTR,#8004h
+006F 300101           87     JNB 1,B11
+0072 A3               88     INC DPTR
+0073 300202           89     B11:JNB 2, B22
+0076 A3               90     INC DPTR
+0077 A3               91     INC DPTR;
+0078                  92     B22:
+0078 E0               93     MOVX A,@DPTR; B = operand B
+0079 F5F0             94     MOV B, A
+                      95     
+                      96     ;SDVIG
+007B ED               97     MOV A, R5; A = operand A
+007C 03               98     cycle3: RR A; sdvig po 3
+007D 03               99     RR A;
+007E 03              100     RR A;
+007F A2F2            101     MOV C, B.2
+0081 92E7            102     MOV ACC.7, C
+0083 A2F1            103     MOV C, B.1
+0085 92E6            104     MOV ACC.6, C
+0087 A2F0            105     MOV C, B.0
+0089 92E5            106     MOV ACC.5, C
+008B DEEF            107     DJNZ R6,cycle3; x R6 raz
+                     108     
+008D 32              109     OP_END:RETI
+                     110     END
+A51 MACRO ASSEMBLER  EVS3                                                                 10/05/2023 14:52:57 PAGE     3
+
+SYMBOL TABLE LISTING
+------ ----- -------
+
+
+N A M E             T Y P E  V A L U E   ATTRIBUTES
+
+A0_IS_NULL . . . .  C ADDR   002EH   A   
+A1 . . . . . . . .  C ADDR   001DH   A   
+A2 . . . . . . . .  C ADDR   0022H   A   
+A2_IS_NULL . . . .  C ADDR   0032H   A   
+A5_IS_NULL . . . .  C ADDR   0036H   A   
+A7_IS_NULL . . . .  C ADDR   003AH   A   
+ACC. . . . . . . .  D ADDR   00E0H   A   
+ARIFM. . . . . . .  C ADDR   0026H   A   
+B. . . . . . . . .  D ADDR   00F0H   A   
+B1 . . . . . . . .  C ADDR   0041H   A   
+B11. . . . . . . .  C ADDR   0073H   A   
+B1_IS_NULL . . . .  C ADDR   004BH   A   
+B2 . . . . . . . .  C ADDR   0046H   A   
+B22. . . . . . . .  C ADDR   0078H   A   
+B3_IS_NULL . . . .  C ADDR   004FH   A   
+B4_IS_NULL . . . .  C ADDR   0053H   A   
+B6_IS_NULL . . . .  C ADDR   0057H   A   
+CYCLE3 . . . . . .  C ADDR   007CH   A   
+IE . . . . . . . .  D ADDR   00A8H   A   
+LOG. . . . . . . .  C ADDR   005DH   A   
+OBRABOTKA. . . . .  C ADDR   0010H   A   
+OP_END . . . . . .  C ADDR   008DH   A   
+P4 . . . . . . . .  N NUMB   00C0H   A   
+PROGRAM. . . . . .  C ADDR   0006H   A   
+PROGRAM2 . . . . .  C ADDR   000CH   A   
+TCON . . . . . . .  D ADDR   0088H   A   
+
+
+REGISTER BANK(S) USED: 0 
+
+
+ASSEMBLY COMPLETE.  0 WARNING(S), 0 ERROR(S)
