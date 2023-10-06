@@ -15,11 +15,15 @@ HANDLE_INTERRUPT:
 BASEADDRESS_A EQU 00h
 BASEADDRESS_B EQU 04h
 RES_ADDRESS EQU 20h
+INDEX_ADDR EQU 21h ; address for storing index
 MOV DPTR,#7FFAh
 MOVX A,@DPTR;
 MOV R2, A
 MOV DPTR, #8000h
-JB ACC.4, PROGRAMM_C_1
+JB ACC.4, MET1
+JNB ACC.4, PROGRAMM_C_0
+MET1:
+LJMP PROGRAMM_C_1
 ; if C = 0
 PROGRAMM_C_0:
 
@@ -103,10 +107,11 @@ MOV R6, B; R6 = B = b7,a0,b6,a1,b5,a2,b4,a3
 ; 16-bit value R6,R5
 SEQ  EQU 00010101b
 MASK EQU 00011111b
-
+NUMBER_OF_ITERS EQU 0Ch ;16 - MASK_LENGTH + 1
+MOV INDEX_ADDR, #00h; i = 0
 MOV RES_ADDRESS,#00h ;init counter (use for this purpose result address)
-MOV A, R5
 COUNT_CYCLE:
+MOV A, R5; load low bits
 ANL A, #MASK
 SUBB A, #SEQ ; check that last bits equal bit sequence
 JNZ COUNT_NEXT
@@ -123,9 +128,16 @@ MOV R6, A ;save new high bits
 MOV A, R5 ; A = low bits of 16-bit value
 RRC A ; the same operation, but there prevous C is ACC.0 from high bits
       ; so we shift our 16-bit value to right and fill higher bits by 0
-JZ MOV_RESULT
 MOV R5, A ; save new low bits
-JMP COUNT_CYCLE
+MOV A, INDEX_ADDR
+INC A
+MOV INDEX_ADDR, A
+MOV A, #NUMBER_OF_ITERS
+CLR C; for calculating diff: NUMBER_OF_ITERS - i (without C)
+SUBB A, INDEX_ADDR
+JNZ COUNT_CYCLE
+
+LJMP MOV_RESULT
 
 ; if C = 1
 PROGRAMM_C_1:
@@ -136,7 +148,7 @@ MOV A, #BASEADDRESS_A
 ADD A, R3; upper board for maximum address in A array
 MOV R3, A; save this board
 
-INDEX_ADDR EQU 21h ; address for storing index
+
 MAX_A_ADDR EQU 22h ; address of maximum for A array
 MAX_B_ADDR EQU 23h ; address of maximum for A array
 ; cycle for finding maximum
