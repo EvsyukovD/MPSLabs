@@ -154,8 +154,8 @@ MOVX A, @DPTR
 MOV MAX_A_ADDR, A; new maximum value
 NEXT_INDEX_A:
 MOV A, INDEX_ADDR
-INC A
-MOV INDEX_ADDR, A; increment i
+INC A; increment i
+MOV INDEX_ADDR, A; save new i
 JMP MAXIMUM_SEARCH_CYCLE_A
 
 FIND_MAX_ARRAY_B:
@@ -184,8 +184,8 @@ MOVX A, @DPTR
 MOV MAX_B_ADDR, A; new maximum value
 NEXT_INDEX_B:
 MOV A, INDEX_ADDR
-INC A
-MOV INDEX_ADDR, A; increment i
+INC A; increment i
+MOV INDEX_ADDR, A; save new i
 JMP MAXIMUM_SEARCH_CYCLE_B
 
 CALCULATE_AND:
