@@ -157,11 +157,11 @@ MOV MAX_A_ADDR, #00h; maximum value in array A
 MAXIMUM_SEARCH_CYCLE_A:
 MOV A, R3
 SUBB A, INDEX_ADDR; check address <= R3
-JC FIND_MAX_ARRAY_B
+JBC PSW.7, FIND_MAX_ARRAY_B
 MOV DPL, INDEX_ADDR
 MOVX A, @DPTR; get A[i]
 SUBB A, MAX_A_ADDR
-JC NEXT_INDEX_A
+JBC PSW.7, NEXT_INDEX_A
 MOVX A, @DPTR
 MOV MAX_A_ADDR, A; new maximum value
 NEXT_INDEX_A:
@@ -180,18 +180,17 @@ MOV R4, A
 MOV A, #BASEADDRESS_B
 ADD A, R4; upper board for maximum address in B array
 MOV R4, A; save this board
-
 ; cycle for finding maximum
 MOV INDEX_ADDR, #BASEADDRESS_B ; address of i
 MOV MAX_B_ADDR, #00h; maximum value in array B
 MAXIMUM_SEARCH_CYCLE_B:
 MOV A, R4
 SUBB A, INDEX_ADDR; check address <= R4
-JC CALCULATE_AND
+JBC PSW.7, CALCULATE_AND
 MOV DPL, INDEX_ADDR
 MOVX A, @DPTR; get B[i]
 SUBB A, MAX_B_ADDR
-JC NEXT_INDEX_B
+JBC PSW.7, NEXT_INDEX_B
 MOVX A, @DPTR
 MOV MAX_B_ADDR, A; new maximum value
 NEXT_INDEX_B:
