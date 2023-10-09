@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 16:09:04 PAGE     1
+A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 18:18:58 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
                       56     
 003F A2E5             57     MOV C, ACC.5
 0041 92F4             58     MOV B.4, C
-A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 16:09:04 PAGE     2
+A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 18:18:58 PAGE     2
 
                       59     
 0043 A2E4             60     MOV C, ACC.4
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
 0090 C3              122     CLR C; C = 0
 0091 EE              123     MOV A, R6 ; A = high bits of 16-bit value
 0092 13              124     RRC A ; right shift of A, after which ACC.7 = 0 (because C = 0), 
-A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 16:09:04 PAGE     3
+A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 18:18:58 PAGE     3
 
                      125           ; ACC.n = ACC.(n + 1) n = 0...6 and new C = ACC.0 (previous ACC.0)
                      126               ; we have made arithmetic shift where C equals previous ACC.0 
@@ -201,7 +201,7 @@ LOC  OBJ            LINE     SOURCE
 00DD 9521            188     SUBB A, INDEX_ADDR; check address <= R4
 00DF 10D713          189     JBC PSW.7, CALCULATE_AND
 00E2 852182          190     MOV DPL, INDEX_ADDR
-A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 16:09:04 PAGE     4
+A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 18:18:58 PAGE     4
 
 00E5 E0              191     MOVX A, @DPTR; get B[i]
 00E6 9523            192     SUBB A, MAX_B_ADDR
@@ -226,10 +226,9 @@ LOC  OBJ            LINE     SOURCE
                      211     
 0100                 212     HANDLE_END:
                      213     ;end of interrupt process
-0100 89C0            214     MOV P4, R1
-0102 32              215     RETI
-                     216     END
-A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 16:09:04 PAGE     5
+0100 32              214     RETI
+                     215     END
+A51 MACRO ASSEMBLER  EVS33                                                                10/09/2023 18:18:58 PAGE     5
 
 SYMBOL TABLE LISTING
 ------ ----- -------

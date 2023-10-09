@@ -211,6 +211,5 @@ MOV P4, R1
 
 HANDLE_END:
 ;end of interrupt process
-MOV P4, R1
 RETI
 END
