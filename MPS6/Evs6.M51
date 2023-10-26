@@ -1,0 +1,94 @@
+BL51 BANKED LINKER/LOCATER V6.22                                                        10/25/2023  11:17:01  PAGE 1
+
+
+BL51 BANKED LINKER/LOCATER V6.22, INVOKED BY:
+C:\KEIL_V5\C51\BIN\BL51.EXE Evs6.obj TO Evs6 RAMSIZE (256)
+
+
+INPUT MODULES INCLUDED:
+  Evs6.obj (EVS6)
+
+
+LINK MAP OF MODULE:  Evs6 (EVS6)
+
+
+            TYPE    BASE      LENGTH    RELOCATION   SEGMENT NAME
+            -----------------------------------------------------
+
+            * * * * * * *   D A T A   M E M O R Y   * * * * * * *
+            REG     0000H     0008H     ABSOLUTE     "REG BANK 0"
+
+            * * * * * * *   C O D E   M E M O R Y   * * * * * * *
+            CODE    0000H     0047H     ABSOLUTE     
+
+
+
+SYMBOL TABLE OF MODULE:  Evs6 (EVS6)
+
+  VALUE           TYPE          NAME
+  ----------------------------------
+
+  -------         MODULE        EVS6
+  N:00C6H         SYMBOL        ADCH
+  N:00C5H         SYMBOL        ADCON
+  D:00F0H         SYMBOL        B
+  N:0008H         SYMBOL        CHANNELS_COUNT
+  C:0012H         SYMBOL        CHECK_FLAGS_ADCI_ADCS
+  C:0032H         SYMBOL        CLOCK
+  N:0005H         SYMBOL        DELAY
+  C:0047H         SYMBOL        END_MAIN_CYCLE
+  C:0037H         SYMBOL        FINISH
+  N:0020H         SYMBOL        INDEX_ADDR
+  C:0006H         SYMBOL        MAIN_ADC_PWM_CYCLE
+  C:003FH         SYMBOL        NEXT_INDEX
+  N:00C0H         SYMBOL        P4
+  C:002BH         SYMBOL        START
+  B:0088H.5       SYMBOL        TF0
+  D:008AH         SYMBOL        TL0
+  D:0089H         SYMBOL        TMOD
+  B:0088H.4       SYMBOL        TR0
+  C:001BH         SYMBOL        WAIT_ADC
+  C:0000H         LINE#         15
+  C:0003H         LINE#         16
+  C:0006H         LINE#         18
+  C:0008H         LINE#         19
+  C:000AH         LINE#         20
+  C:000CH         LINE#         21
+  C:000EH         LINE#         23
+  C:0010H         LINE#         24
+  C:0012H         LINE#         27
+  C:0014H         LINE#         28
+  C:0016H         LINE#         29
+BL51 BANKED LINKER/LOCATER V6.22                                                      10/25/2023  11:17:01  PAGE 2
+
+
+  C:0018H         LINE#         31
+  C:001BH         LINE#         32
+  C:001DH         LINE#         33
+  C:001FH         LINE#         34
+  C:0021H         LINE#         35
+  C:0023H         LINE#         39
+  C:0026H         LINE#         40
+  C:0028H         LINE#         41
+  C:002AH         LINE#         42
+  C:002BH         LINE#         43
+  C:002DH         LINE#         44
+  C:0030H         LINE#         45
+  C:0032H         LINE#         46
+  C:0035H         LINE#         47
+  C:0037H         LINE#         48
+  C:0039H         LINE#         49
+  C:003AH         LINE#         50
+  C:003CH         LINE#         52
+  C:003FH         LINE#         54
+  C:0041H         LINE#         55
+  C:0042H         LINE#         56
+  C:0044H         LINE#         57
+  -------         ENDMOD        EVS6
+
+******************************************************************************
+* RESTRICTED VERSION WITH 0800H BYTE CODE SIZE LIMIT; USED: 0047H BYTE ( 3%) *
+******************************************************************************
+
+Program Size: data=8.0 xdata=0 code=71
+LINK/LOCATE RUN COMPLETE.  0 WARNING(S),  0 ERROR(S)
