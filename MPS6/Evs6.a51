@@ -5,13 +5,13 @@ ADCH EQU 0C6H
 PWM0 EQU  0FCH
 PWM1 EQU 0FDH
 PWMP EQU 0FEH
-DELAY EQU 0Ah
+DELAY EQU 01h
 CHANNELS_COUNT EQU 8
 INDEX_ADDR EQU 20h
 PWMP_VAL EQU 9
-BASE EQU 10h
+BASE EQU 0Ah
 PWMX_VALS_BASE_ADDR EQU 21h
-;calculate PWMx value for any S = T/t1, T = t0 + t1
+;calculate PWMx value for any S = T/t1, T = t0 + t1, t0/t1 = PWMx / (255 - PWMx)
 PWMX_VAL_FOR_S_0 EQU 0FFh
 PWMX_VAL_FOR_S_1 EQU 00h
 PWMX_VAL_FOR_S_2 EQU 080h
@@ -23,7 +23,7 @@ PWMX_VAL_FOR_S_7 EQU 0DBh
 PWMX_VAL_FOR_S_8 EQU 0DFh
 PWMX_VAL_FOR_S_9 EQU 0E3h
 
-;--write PWMx values as array
+;--write PWMx values as array in internal memory
 MOV R0, #PWMX_VALS_BASE_ADDR
 MOV @R0, #PWMX_VAL_FOR_S_0
 MOV A, R0
@@ -62,35 +62,32 @@ MOV A, R0
 INC A
 MOV R0, A
 MOV @R0, #PWMX_VAL_FOR_S_9
-;IS_READY:
-;MOV DPTR, #7ffbh ; address with ready flag
-;MOVX A, @DPTR
-;ANL A, #01
-;JZ IS_READY; wait for ready flag
+IS_READY:
+MOV DPTR, #7ffbh ; address with ready flag
+MOVX A, @DPTR
+ANL A, #01
+JZ IS_READY; wait for ready flag
 
+MOV A, #00h
+MOVX @DPTR, A; reset flag
 MOV TMOD, #00000001b; mode 1
 MOV INDEX_ADDR, #0; init index, i
 MAIN_ADC_PWM_CYCLE:
 MOV A, #CHANNELS_COUNT
 SUBB A, INDEX_ADDR
-JZ END_MAIN_CYCLE
-MOV A, INDEX_ADDR; A = i
+JZ IS_READY
+MOV ADCON, #00000000b; reset ADCON
 ; read value from channel with index i
-ADD A, ADCON
+MOV A, INDEX_ADDR; A = i
+SETB ACC.3
 MOV ADCON, A; now ADCON contains index of channel
-CHECK_FLAGS_ADCI_ADCS:
-MOV A, ADCON
-ANL A, #18H ;check flags ADCI and ADCS
-JNZ CHECK_FLAGS_ADCI_ADCS
-
-MOV ADCON, #08H ; start ADC
 WAIT_ADC: MOV A,ADCON
 ANL A, #10H
 JZ WAIT_ADC ;wait for ADC read value from channel
 MOV A, ADCH ;read result of ADC work
-MOV ADCON, #00h; reset flags
 ;-- lets extract digits from ADCH value
-/*DIGITS_EXTRACTING_CYCLE:
+DIGITS_EXTRACTING_CYCLE:
+MOV R4, A
 MOV B, #BASE
 DIV AB; divide A on BASE and receive A = BASE * z + r, where A = z and B = r (r from {0,..,BASE - 1})
 ;---work with pwm---
@@ -100,16 +97,21 @@ ADD A, B; calc addres of PWMx value
 MOV R1, A
 MOV PWM0, @R1
 MOV A, R0
-
-JNZ DIGITS_EXTRACTING_CYCLE*/
-
-
+MOV R3, #01h
+ACALL SLEEP
+MOV A, R4
+SUBB A, B
+MOV B, #BASE
+DIV AB
+JNZ DIGITS_EXTRACTING_CYCLE
+MOV PWM0, #PWMX_VAL_FOR_S_0
+MOV R3, #DELAY
+ACALL SLEEP
+LJMP NEXT_INDEX
 ;now lets make delay
 SLEEP:
-MOV B, #DELAY; external cycle
-MOV R3, B
-MOV A, #064h 		
-MOV R2, A; inner cycle seconds R2 = A * 0.026
+;MOV R3, #DELAY; external cycle 		
+MOV R2, #064h; inner cycle seconds R2 = A * 0.026
     START: CLR TR0		;reset counter
         MOV TH0, #HIGH(-10000);init value 
 		MOV TL0, #LOW(-10000); load to T0 value 10000 (it means that processor will work for 10 ms = 0.01 sec if freq is 12 MHz)
@@ -118,9 +120,9 @@ MOV R2, A; inner cycle seconds R2 = A * 0.026
         CLOCK:
 		   JNB TF0, CLOCK
            FINISH: DJNZ R2, START
-            MOV R2, A
+            MOV R2, #064h
             DJNZ R3, START
-
+RET
 NEXT_INDEX:
 MOV A, INDEX_ADDR
 INC A
