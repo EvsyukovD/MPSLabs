@@ -2,10 +2,66 @@ ORG 0000H
 P4 EQU 0C0H
 ADCON EQU 0C5H
 ADCH EQU 0C6H
-DELAY EQU 5
+PWM0 EQU  0FCH
+PWM1 EQU 0FDH
+PWMP EQU 0FEH
+DELAY EQU 0Ah
 CHANNELS_COUNT EQU 8
 INDEX_ADDR EQU 20h
 PWMP_VAL EQU 9
+BASE EQU 10h
+PWMX_VALS_BASE_ADDR EQU 21h
+;calculate PWMx value for any S = T/t1, T = t0 + t1
+PWMX_VAL_FOR_S_0 EQU 0FFh
+PWMX_VAL_FOR_S_1 EQU 00h
+PWMX_VAL_FOR_S_2 EQU 080h
+PWMX_VAL_FOR_S_3 EQU 0AAh
+PWMX_VAL_FOR_S_4 EQU 0BFh
+PWMX_VAL_FOR_S_5 EQU 0CCh
+PWMX_VAL_FOR_S_6 EQU 0D5h
+PWMX_VAL_FOR_S_7 EQU 0DBh
+PWMX_VAL_FOR_S_8 EQU 0DFh
+PWMX_VAL_FOR_S_9 EQU 0E3h
+
+;--write PWMx values as array
+MOV R0, #PWMX_VALS_BASE_ADDR
+MOV @R0, #PWMX_VAL_FOR_S_0
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_1
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_2
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_3
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_4
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_5
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_6
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_7
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_8
+MOV A, R0
+INC A
+MOV R0, A
+MOV @R0, #PWMX_VAL_FOR_S_9
 ;IS_READY:
 ;MOV DPTR, #7ffbh ; address with ready flag
 ;MOVX A, @DPTR
@@ -32,42 +88,44 @@ WAIT_ADC: MOV A,ADCON
 ANL A, #10H
 JZ WAIT_ADC ;wait for ADC read value from channel
 MOV A, ADCH ;read result of ADC work
+MOV ADCON, #00h; reset flags
+;-- lets extract digits from ADCH value
+/*DIGITS_EXTRACTING_CYCLE:
+MOV B, #BASE
+DIV AB; divide A on BASE and receive A = BASE * z + r, where A = z and B = r (r from {0,..,BASE - 1})
 ;---work with pwm---
-MOV PWM0, #00h
+MOV R0, A; save A value
+MOV A, #PWMX_VALS_BASE_ADDR
+ADD A, B; calc addres of PWMx value
+MOV R1, A
+MOV PWM0, @R1
+MOV A, R0
+
+JNZ DIGITS_EXTRACTING_CYCLE*/
+
+
 ;now lets make delay
+SLEEP:
 MOV B, #DELAY; external cycle
 MOV R3, B
-MOV A, #027h 		
-MOV R2, A; inner cycle seconds R2 = DELAY * B * 0.026
+MOV A, #064h 		
+MOV R2, A; inner cycle seconds R2 = A * 0.026
     START: CLR TR0		;reset counter
-        MOV TL0, #000h;init value
+        MOV TH0, #HIGH(-10000);init value 
+		MOV TL0, #LOW(-10000); load to T0 value 10000 (it means that processor will work for 10 ms = 0.01 sec if freq is 12 MHz)
+		CLR TF0
         SETB TR0		;start count
-        CLOCK:JBC TF0, FINISH	
-           JMP CLOCK
+        CLOCK:
+		   JNB TF0, CLOCK
            FINISH: DJNZ R2, START
             MOV R2, A
             DJNZ R3, START
 
-MOV ADCON, #00h; reset flags
 NEXT_INDEX:
 MOV A, INDEX_ADDR
 INC A
 MOV INDEX_ADDR, A
 LJMP MAIN_ADC_PWM_CYCLE
-
-
-;M1: MOV A,ADCON
-;ANL A,#18H ;check flags ADCI and ADCS
-;JNZ M1
-;MOV ADCON,#08H ; start ADC
-;MM5: MOV A,ADCON
-;ANL A,#10H
-;JZ MM5 ;wait for ADC read value from channel 0
-;MOV A,ADCH ;read result of ADC work
-;SWAP A; ---do smth with A---
-;MOV P4,A 
-;MOV ADCON,#00H ;reset flags
-;LJMP M1
 
 END_MAIN_CYCLE:
 END
