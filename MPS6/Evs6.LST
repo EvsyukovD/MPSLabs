@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 10:15:49 PAGE     1
+A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 17:13:55 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
 0025 76DB             56     MOV @R0, #PWMX_VAL_FOR_S_7
 0027 E8               57     MOV A, R0
 0028 04               58     INC A
-A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 10:15:49 PAGE     2
+A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 17:13:55 PAGE     2
 
 0029 F8               59     MOV R0, A
 002A 76DF             60     MOV @R0, #PWMX_VAL_FOR_S_8
@@ -79,74 +79,75 @@ LOC  OBJ            LINE     SOURCE
 0035 5401             68     ANL A, #01
 0037 60F8             69     JZ IS_READY; wait for ready flag
                       70     
-0039 7400             71     MOV A, #00h
-003B F0               72     MOVX @DPTR, A; reset flag
-003C 758901           73     MOV TMOD, #00000001b; mode 1
-003F 752000           74     MOV INDEX_ADDR, #0; init index, i
-0042                  75     MAIN_ADC_PWM_CYCLE:
-0042 7408             76     MOV A, #CHANNELS_COUNT
-0044 9520             77     SUBB A, INDEX_ADDR
-0046 60E9             78     JZ IS_READY
-0048 75C500           79     MOV ADCON, #00000000b; reset ADCON
-                      80     ; read value from channel with index i
-004B E520             81     MOV A, INDEX_ADDR; A = i
-004D D2E3             82     SETB ACC.3
-004F F5C5             83     MOV ADCON, A; now ADCON contains index of channel
-0051 E5C5             84     WAIT_ADC: MOV A,ADCON
-0053 5410             85     ANL A, #10H
-0055 60FA             86     JZ WAIT_ADC ;wait for ADC read value from channel
-0057 E5C6             87     MOV A, ADCH ;read result of ADC work
-                      88     ;-- lets extract digits from ADCH value
-0059                  89     DIGITS_EXTRACTING_CYCLE:
-0059 FC               90     MOV R4, A
-005A 75F00A           91     MOV B, #BASE
-005D 84               92     DIV AB; divide A on BASE and receive A = BASE * z + r, where A = z and B = r (r from {0,..,
+0039 75FEFF           71     MOV PWMP, #0ffh; increment pwm counter each 256 tick [optional, can be 0]
+003C 7400             72     MOV A, #00h
+003E F0               73     MOVX @DPTR, A; reset flag
+003F 758901           74     MOV TMOD, #00000001b; mode 1
+0042 752000           75     MOV INDEX_ADDR, #0; init index, i
+0045                  76     MAIN_ADC_PWM_CYCLE:
+0045 7408             77     MOV A, #CHANNELS_COUNT
+0047 9520             78     SUBB A, INDEX_ADDR
+0049 60E6             79     JZ IS_READY
+004B 75C500           80     MOV ADCON, #00000000b; reset ADCON
+                      81     ; read value from channel with index i
+004E E520             82     MOV A, INDEX_ADDR; A = i
+0050 D2E3             83     SETB ACC.3
+0052 F5C5             84     MOV ADCON, A; now ADCON contains index of channel
+0054 E5C5             85     WAIT_ADC: MOV A,ADCON
+0056 5410             86     ANL A, #10H
+0058 60FA             87     JZ WAIT_ADC ;wait for ADC read value from channel
+005A E5C6             88     MOV A, ADCH ;read result of ADC work
+                      89     ;-- lets extract digits from ADCH value
+005C                  90     DIGITS_EXTRACTING_CYCLE:
+005C FC               91     MOV R4, A;save A in R4
+005D 75F00A           92     MOV B, #BASE
+0060 84               93     DIV AB; divide A on BASE and receive A = BASE * z + r, where A = z and B = r (r from {0,..,
                              BASE - 1})
-                      93     ;---work with pwm---
-005E F8               94     MOV R0, A; save A value
-005F 7421             95     MOV A, #PWMX_VALS_BASE_ADDR
-0061 25F0             96     ADD A, B; calc addres of PWMx value
-0063 F9               97     MOV R1, A
-0064 87FC             98     MOV PWM0, @R1
-0066 E8               99     MOV A, R0
-0067 7B01            100     MOV R3, #01h; sleep for 1 second
-0069 117E            101     ACALL SLEEP
-006B EC              102     MOV A, R4
-006C 95F0            103     SUBB A, B
-006E 75F00A          104     MOV B, #BASE
-0071 84              105     DIV AB
-0072 70E5            106     JNZ DIGITS_EXTRACTING_CYCLE
-0074 75FCFF          107     MOV PWM0, #PWMX_VAL_FOR_S_0
-0077 7B01            108     MOV R3, #DELAY
-0079 117E            109     ACALL SLEEP
-007B 020096          110     LJMP NEXT_INDEX
-                     111     ;delay function:
-007E                 112     SLEEP:
-                     113     ; R3 (as param) contains delay          
-007E 7A64            114     MOV R2, #064h
-0080 C28C            115         START: CLR TR0              ;reset counter
-0082 758CD8          116             MOV TH0, #HIGH(-10000);init value 
-0085 758AF0          117                     MOV TL0, #LOW(-10000); load to T0 value 10000 (it means that processor will
+                      94     ;---work with pwm---
+                      95     ;MOV R0, A; save A value
+0061 7421             96     MOV A, #PWMX_VALS_BASE_ADDR
+0063 25F0             97     ADD A, B; calc addres of PWMx value
+0065 F9               98     MOV R1, A
+0066 87FC             99     MOV PWM0, @R1
+                     100     ;MOV A, R0
+0068 7B01            101     MOV R3, #01h; sleep for 1 second
+006A 117F            102     ACALL SLEEP
+006C EC              103     MOV A, R4
+006D 95F0            104     SUBB A, B
+006F 75F00A          105     MOV B, #BASE
+0072 84              106     DIV AB
+0073 70E7            107     JNZ DIGITS_EXTRACTING_CYCLE
+0075 75FCFF          108     MOV PWM0, #PWMX_VAL_FOR_S_0
+0078 7B01            109     MOV R3, #DELAY
+007A 117F            110     ACALL SLEEP
+007C 020097          111     LJMP NEXT_INDEX
+                     112     ;delay function:
+007F                 113     SLEEP:
+                     114     ; R3 (as param) contains delay          
+007F 7A64            115     MOV R2, #064h
+0081 C28C            116         START: CLR TR0              ;reset counter
+0083 758CD8          117             MOV TH0, #HIGH(-10000);init value 
+0086 758AF0          118                     MOV TL0, #LOW(-10000); load to T0 value 10000 (it means that processor will
                               work for 10 ms = 0.01 sec if freq is 12 MHz)
-0088 C28D            118                     CLR TF0
-008A D28C            119             SETB TR0                ;start count
-008C                 120             CLOCK:
-008C 308DFD          121                        JNB TF0, CLOCK
-008F DAEF            122                FINISH: DJNZ R2, START
-A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 10:15:49 PAGE     3
+0089 C28D            119                     CLR TF0
+008B D28C            120             SETB TR0                ;start count
+008D                 121             CLOCK:
+008D 308DFD          122                        JNB TF0, CLOCK
+A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 17:13:55 PAGE     3
 
-0091 7A64            123                 MOV R2, #064h
-0093 DBEB            124                 DJNZ R3, START
-0095 22              125     RET
-0096                 126     NEXT_INDEX:
-0096 E520            127     MOV A, INDEX_ADDR
-0098 04              128     INC A
-0099 F520            129     MOV INDEX_ADDR, A
-009B 020042          130     LJMP MAIN_ADC_PWM_CYCLE
-                     131     
-009E                 132     END_MAIN_CYCLE:
-                     133     END
-A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 10:15:49 PAGE     4
+0090 DAEF            123                FINISH: DJNZ R2, START
+0092 7A64            124                 MOV R2, #064h
+0094 DBEB            125                 DJNZ R3, START
+0096 22              126     RET
+0097                 127     NEXT_INDEX:
+0097 E520            128     MOV A, INDEX_ADDR
+0099 04              129     INC A
+009A F520            130     MOV INDEX_ADDR, A
+009C 020045          131     LJMP MAIN_ADC_PWM_CYCLE
+                     132     
+009F                 133     END_MAIN_CYCLE:
+                     134     END
+A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 17:13:55 PAGE     4
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -160,15 +161,15 @@ ADCON . . . . . . . . .  N NUMB   00C5H   A
 B . . . . . . . . . . .  D ADDR   00F0H   A   
 BASE. . . . . . . . . .  N NUMB   000AH   A   
 CHANNELS_COUNT. . . . .  N NUMB   0008H   A   
-CLOCK . . . . . . . . .  C ADDR   008CH   A   
+CLOCK . . . . . . . . .  C ADDR   008DH   A   
 DELAY . . . . . . . . .  N NUMB   0001H   A   
-DIGITS_EXTRACTING_CYCLE  C ADDR   0059H   A   
-END_MAIN_CYCLE. . . . .  C ADDR   009EH   A   
-FINISH. . . . . . . . .  C ADDR   008FH   A   
+DIGITS_EXTRACTING_CYCLE  C ADDR   005CH   A   
+END_MAIN_CYCLE. . . . .  C ADDR   009FH   A   
+FINISH. . . . . . . . .  C ADDR   0090H   A   
 INDEX_ADDR. . . . . . .  N NUMB   0020H   A   
 IS_READY. . . . . . . .  C ADDR   0031H   A   
-MAIN_ADC_PWM_CYCLE. . .  C ADDR   0042H   A   
-NEXT_INDEX. . . . . . .  C ADDR   0096H   A   
+MAIN_ADC_PWM_CYCLE. . .  C ADDR   0045H   A   
+NEXT_INDEX. . . . . . .  C ADDR   0097H   A   
 P4. . . . . . . . . . .  N NUMB   00C0H   A   
 PWM0. . . . . . . . . .  N NUMB   00FCH   A   
 PWM1. . . . . . . . . .  N NUMB   00FDH   A   
@@ -185,14 +186,14 @@ PWMX_VAL_FOR_S_6. . . .  N NUMB   00D5H   A
 PWMX_VAL_FOR_S_7. . . .  N NUMB   00DBH   A   
 PWMX_VAL_FOR_S_8. . . .  N NUMB   00DFH   A   
 PWMX_VAL_FOR_S_9. . . .  N NUMB   00E3H   A   
-SLEEP . . . . . . . . .  C ADDR   007EH   A   
-START . . . . . . . . .  C ADDR   0080H   A   
+SLEEP . . . . . . . . .  C ADDR   007FH   A   
+START . . . . . . . . .  C ADDR   0081H   A   
 TF0 . . . . . . . . . .  B ADDR   0088H.5 A   
 TH0 . . . . . . . . . .  D ADDR   008CH   A   
 TL0 . . . . . . . . . .  D ADDR   008AH   A   
 TMOD. . . . . . . . . .  D ADDR   0089H   A   
 TR0 . . . . . . . . . .  B ADDR   0088H.4 A   
-WAIT_ADC. . . . . . . .  C ADDR   0051H   A   
+WAIT_ADC. . . . . . . .  C ADDR   0054H   A   
 
 
 REGISTER BANK(S) USED: 0 

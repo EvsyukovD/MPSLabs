@@ -68,6 +68,7 @@ MOVX A, @DPTR
 ANL A, #01
 JZ IS_READY; wait for ready flag
 
+MOV PWMP, #0ffh; increment pwm counter each 256 tick [optional, can be 0]
 MOV A, #00h
 MOVX @DPTR, A; reset flag
 MOV TMOD, #00000001b; mode 1
@@ -87,16 +88,14 @@ JZ WAIT_ADC ;wait for ADC read value from channel
 MOV A, ADCH ;read result of ADC work
 ;-- lets extract digits from ADCH value
 DIGITS_EXTRACTING_CYCLE:
-MOV R4, A
+MOV R4, A;save A in R4
 MOV B, #BASE
 DIV AB; divide A on BASE and receive A = BASE * z + r, where A = z and B = r (r from {0,..,BASE - 1})
 ;---work with pwm---
-MOV R0, A; save A value
 MOV A, #PWMX_VALS_BASE_ADDR
 ADD A, B; calc addres of PWMx value
 MOV R1, A
 MOV PWM0, @R1
-MOV A, R0
 MOV R3, #01h; sleep for 1 second
 ACALL SLEEP
 MOV A, R4
