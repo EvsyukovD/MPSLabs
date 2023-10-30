@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS6                                                                 10/29/2023 21:02:14 PAGE     1
+A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 10:15:49 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -18,7 +18,7 @@ LOC  OBJ            LINE     SOURCE
   0008                 9     CHANNELS_COUNT EQU 8
   0020                10     INDEX_ADDR EQU 20h
   0009                11     PWMP_VAL EQU 9
-  000A                12     BASE EQU 0Ah
+  000A                12     BASE EQU 0Ah; base=10
   0021                13     PWMX_VALS_BASE_ADDR EQU 21h
                       14     ;calculate PWMx value for any S = T/t1, T = t0 + t1, t0/t1 = PWMx / (255 - PWMx)
   00FF                15     PWMX_VAL_FOR_S_0 EQU 0FFh
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
 0025 76DB             56     MOV @R0, #PWMX_VAL_FOR_S_7
 0027 E8               57     MOV A, R0
 0028 04               58     INC A
-A51 MACRO ASSEMBLER  EVS6                                                                 10/29/2023 21:02:14 PAGE     2
+A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 10:15:49 PAGE     2
 
 0029 F8               59     MOV R0, A
 002A 76DF             60     MOV @R0, #PWMX_VAL_FOR_S_8
@@ -109,7 +109,7 @@ LOC  OBJ            LINE     SOURCE
 0063 F9               97     MOV R1, A
 0064 87FC             98     MOV PWM0, @R1
 0066 E8               99     MOV A, R0
-0067 7B01            100     MOV R3, #01h
+0067 7B01            100     MOV R3, #01h; sleep for 1 second
 0069 117E            101     ACALL SLEEP
 006B EC              102     MOV A, R4
 006C 95F0            103     SUBB A, B
@@ -120,10 +120,10 @@ LOC  OBJ            LINE     SOURCE
 0077 7B01            108     MOV R3, #DELAY
 0079 117E            109     ACALL SLEEP
 007B 020096          110     LJMP NEXT_INDEX
-                     111     ;now lets make delay
+                     111     ;delay function:
 007E                 112     SLEEP:
-                     113     ;MOV R3, #DELAY; external cycle                 
-007E 7A64            114     MOV R2, #064h; inner cycle seconds R2 = A * 0.026
+                     113     ; R3 (as param) contains delay          
+007E 7A64            114     MOV R2, #064h
 0080 C28C            115         START: CLR TR0              ;reset counter
 0082 758CD8          116             MOV TH0, #HIGH(-10000);init value 
 0085 758AF0          117                     MOV TL0, #LOW(-10000); load to T0 value 10000 (it means that processor will
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
 008C                 120             CLOCK:
 008C 308DFD          121                        JNB TF0, CLOCK
 008F DAEF            122                FINISH: DJNZ R2, START
-A51 MACRO ASSEMBLER  EVS6                                                                 10/29/2023 21:02:14 PAGE     3
+A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 10:15:49 PAGE     3
 
 0091 7A64            123                 MOV R2, #064h
 0093 DBEB            124                 DJNZ R3, START
@@ -146,7 +146,7 @@ LOC  OBJ            LINE     SOURCE
                      131     
 009E                 132     END_MAIN_CYCLE:
                      133     END
-A51 MACRO ASSEMBLER  EVS6                                                                 10/29/2023 21:02:14 PAGE     4
+A51 MACRO ASSEMBLER  EVS6                                                                 10/30/2023 10:15:49 PAGE     4
 
 SYMBOL TABLE LISTING
 ------ ----- -------

@@ -9,7 +9,7 @@ DELAY EQU 01h
 CHANNELS_COUNT EQU 8
 INDEX_ADDR EQU 20h
 PWMP_VAL EQU 9
-BASE EQU 0Ah
+BASE EQU 0Ah; base=10
 PWMX_VALS_BASE_ADDR EQU 21h
 ;calculate PWMx value for any S = T/t1, T = t0 + t1, t0/t1 = PWMx / (255 - PWMx)
 PWMX_VAL_FOR_S_0 EQU 0FFh
@@ -97,7 +97,7 @@ ADD A, B; calc addres of PWMx value
 MOV R1, A
 MOV PWM0, @R1
 MOV A, R0
-MOV R3, #01h
+MOV R3, #01h; sleep for 1 second
 ACALL SLEEP
 MOV A, R4
 SUBB A, B
@@ -108,10 +108,10 @@ MOV PWM0, #PWMX_VAL_FOR_S_0
 MOV R3, #DELAY
 ACALL SLEEP
 LJMP NEXT_INDEX
-;now lets make delay
+;delay function:
 SLEEP:
-;MOV R3, #DELAY; external cycle 		
-MOV R2, #064h; inner cycle seconds R2 = A * 0.026
+; R3 (as param) contains delay 		
+MOV R2, #064h
     START: CLR TR0		;reset counter
         MOV TH0, #HIGH(-10000);init value 
 		MOV TL0, #LOW(-10000); load to T0 value 10000 (it means that processor will work for 10 ms = 0.01 sec if freq is 12 MHz)
