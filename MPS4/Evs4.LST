@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS4                                                                 11/06/2023 13:14:20 PAGE     1
+A51 MACRO ASSEMBLER  EVS4                                                                 11/06/2023 14:02:24 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -39,118 +39,125 @@ LOC  OBJ            LINE     SOURCE
 000C 752502           30             MOV N_ADDRESS, #2; N1
 000F 85252A           31             MOV N1_ADDRESS, N_ADDRESS
 0012 752400           32             MOV TRIES_COUNT_ADDRESS, #00h
-0015 752800           33             MOV INDEX_ADDRESS, #00h
-0018 752900           34             MOV CORRECT_ANSWERS_ADDR, #00h
-                      35     ;----init password------
-001B 752000           36             MOV PASSWORD_BASE_ADDRESS, #0
-001E 7420             37             MOV A, #PASSWORD_BASE_ADDRESS
-0020 04               38             INC A
-0021 C8               39             XCH A, R0
-0022 7602             40             MOV @R0, #2
-0024 C8               41             XCH A, R0
-0025 04               42             INC A
-0026 C8               43             XCH A, R0
-0027 7604             44             MOV @R0, #4
-0029 C8               45             XCH A, R0
-002A 04               46             INC A
-002B C8               47             XCH A, R0
-002C 7605             48             MOV @R0, #5
-                      49     ;-----------------------
-002E A820             50             MOV R0, PASSWORD_BASE_ADDRESS; R0 contains current correct bit
-0030                  51     POLLING_P0_CYCLE:
-0030 E580             52             MOV A, P0
-0032 F526             53             MOV CURRENT_VAL_ADDRESS, A
-0034 6527             54             XRL A, PREV_VAL_ADDRESS
-0036 60F8             55             JZ POLLING_P0_CYCLE; is P0 changed?
-0038                  56     GET_BIT:; extract bits via right rotate
-0038 20E008           57             JB ACC.0, CHECK_ERROR
-003B C528             58             XCH A, INDEX_ADDRESS
-A51 MACRO ASSEMBLER  EVS4                                                                 11/06/2023 13:14:20 PAGE     2
+0015 752900           33             MOV CORRECT_ANSWERS_ADDR, #00h
+                      34     ;----init password------
+0018 752000           35             MOV PASSWORD_BASE_ADDRESS, #0
+001B 7420             36             MOV A, #PASSWORD_BASE_ADDRESS
+001D 04               37             INC A
+001E C8               38             XCH A, R0
+001F 7602             39             MOV @R0, #2
+0021 C8               40             XCH A, R0
+0022 04               41             INC A
+0023 C8               42             XCH A, R0
+0024 7604             43             MOV @R0, #4
+0026 C8               44             XCH A, R0
+0027 04               45             INC A
+0028 C8               46             XCH A, R0
+0029 7605             47             MOV @R0, #5
+                      48     ;-----------------------
+002B A820             49             MOV R0, PASSWORD_BASE_ADDRESS; R0 contains current correct bit
+002D                  50     POLLING_P0_CYCLE:
+002D E580             51             MOV A, P0
+002F F526             52             MOV CURRENT_VAL_ADDRESS, A
+0031 6527             53             XRL A, PREV_VAL_ADDRESS
+0033 60F8             54             JZ POLLING_P0_CYCLE; is P0 changed?
+0035 852627           55             MOV PREV_VAL_ADDRESS, CURRENT_VAL_ADDRESS
+0038 752800           56             MOV INDEX_ADDRESS, #00h
+003B                  57     GET_BIT:; extract bits via right rotate
+003B 20E008           58             JB ACC.0, CHECK_ERROR
+A51 MACRO ASSEMBLER  EVS4                                                                 11/06/2023 14:02:24 PAGE     2
 
-003D 04               59             INC A
-003E C528             60             XCH A, INDEX_ADDRESS; now index contains bit number
-0040 03               61             RR A
-0041 0138             62             AJMP GET_BIT
-0043                  63     CHECK_ERROR:
-0043 E520             64         MOV A, PASSWORD_BASE_ADDRESS
-0045 2529             65             ADD A, CORRECT_ANSWERS_ADDR
-0047 F8               66             MOV R0, A; now R0 contains correct value from password
-0048 E528             67             MOV A, INDEX_ADDRESS
-004A 98               68             SUBB A, R0
-004B 600F             69             JZ PROCESS_CORRECT_BIT
-004D                  70     PROCESS_ERROR_BIT:
-004D E524             71         MOV A, TRIES_COUNT_ADDRESS
-004F 04               72             INC A
-0050 F524             73             MOV TRIES_COUNT_ADDRESS, A
-0052 E525             74             MOV A, N_ADDRESS
-0054 9524             75             SUBB A, TRIES_COUNT_ADDRESS; check that N >= tries_count
-0056 10D758           76         JBC PSW.7, BLOCK_CYCLE
-0059 020030           77         LJMP POLLING_P0_CYCLE
-005C                  78     PROCESS_CORRECT_BIT:
-005C E529             79         MOV A, CORRECT_ANSWERS_ADDR
-005E 04               80             INC A
-005F F529             81             MOV CORRECT_ANSWERS_ADDR, A
-                      82     ;lets define which Ni we need to calculate
-0061 7401             83             MOV A, #1; N2, because CORRECT_ANSWERS_ADDR from {0,1,2,3}
-0063 9529             84             SUBB A, CORRECT_ANSWERS_ADDR
-0065 600E             85             JZ CALC_N2
-                      86             
-0067 C3               87             CLR C; if C is 1 (A < CORRECT_ANSWERS_ADDR)
-0068 7402             88             MOV A, #2; N3
-006A 9529             89             SUBB A, CORRECT_ANSWERS_ADDR
-006C 6013             90             JZ CALC_N3
-                      91             
-006E C3               92             CLR C
-006F 7403             93             MOV A, #3; N4
-0071 9529             94             SUBB A, CORRECT_ANSWERS_ADDR
-0073 601D             95             JZ CALC_N4
-                      96             
-0075                  97     CALC_N2:
-0075 752503           98             MOV N_ADDRESS, #3; new upper bound value for errors number
-0078 85242A           99             MOV N1_ADDRESS, TRIES_COUNT_ADDRESS; num of tries on first iter
-007B 752400          100             MOV TRIES_COUNT_ADDRESS, #00h
-007E 020030          101             LJMP POLLING_P0_CYCLE
-0081                 102     CALC_N3:
-0081 E52A            103         MOV A, N1_ADDRESS
-0083 85242B          104             MOV N2_ADDRESS, TRIES_COUNT_ADDRESS; num of tries on second iter
-0086 252B            105             ADD A, N2_ADDRESS
-0088 5401            106             ANL A, #01h
-008A F525            107             MOV N_ADDRESS, A; new upper bound value for errors number
-008C 752400          108             MOV TRIES_COUNT_ADDRESS, #00h
-008F 020030          109         LJMP POLLING_P0_CYCLE
-0092                 110     CALC_N4:
-0092 85242C          111         MOV N3_ADDRESS, TRIES_COUNT_ADDRESS
-0095 752400          112             MOV TRIES_COUNT_ADDRESS, #00h
-0098 E52A            113             MOV A, N1_ADDRESS
-009A 252B            114         ADD A, N2_ADDRESS
-009C 252C            115             ADD A, N3_ADDRESS
-009E FA              116             MOV R2, A; save sum of N1,N2,N3
-009F 7905            117             MOV R1, #5
-00A1 99              118             SUBB A, R1
-00A2 10D702          119             JBC PSW.7, EXCHANGE
-00A5 F525            120             MOV N_ADDRESS, A
-                     121             
-00A7                 122     EXCHANGE:
-00A7 EA              123         MOV A, R2
-00A8 7905            124             MOV R1, #5
-A51 MACRO ASSEMBLER  EVS4                                                                 11/06/2023 13:14:20 PAGE     3
+003E C528             59             XCH A, INDEX_ADDRESS
+0040 04               60             INC A
+0041 C528             61             XCH A, INDEX_ADDRESS; now index contains bit number
+0043 03               62             RR A
+0044 013B             63             AJMP GET_BIT
+0046                  64     CHECK_ERROR:
+0046 7420             65         MOV A, #PASSWORD_BASE_ADDRESS
+0048 2529             66             ADD A, CORRECT_ANSWERS_ADDR
+004A F9               67             MOV R1, A
+004B E7               68             MOV A, @R1
+004C F8               69             MOV R0, A; now R0 contains correct value from password
+004D E528             70             MOV A, INDEX_ADDRESS
+004F 98               71             SUBB A, R0
+0050 6010             72             JZ PROCESS_CORRECT_BIT
+0052                  73     PROCESS_ERROR_BIT:
+0052 C3               74         CLR C; clear C after subb
+0053 E524             75         MOV A, TRIES_COUNT_ADDRESS
+0055 04               76             INC A
+0056 F524             77             MOV TRIES_COUNT_ADDRESS, A
+0058 E525             78             MOV A, N_ADDRESS
+005A 9524             79             SUBB A, TRIES_COUNT_ADDRESS; check that N >= tries_count
+005C 10D75D           80         JBC PSW.7, BLOCK_CYCLE
+005F 02002D           81         LJMP POLLING_P0_CYCLE
+0062                  82     PROCESS_CORRECT_BIT:
+0062 E529             83         MOV A, CORRECT_ANSWERS_ADDR
+0064 04               84             INC A
+0065 F529             85             MOV CORRECT_ANSWERS_ADDR, A
+                      86     ;lets define which Ni we need to calculate
+0067 7401             87             MOV A, #1; N2, because CORRECT_ANSWERS_ADDR from {0,1,2,3}
+0069 9529             88             SUBB A, CORRECT_ANSWERS_ADDR
+006B 6015             89             JZ CALC_N2
+                      90             
+006D C3               91             CLR C; if C is 1 (A < CORRECT_ANSWERS_ADDR)
+006E 7402             92             MOV A, #2; N3
+0070 9529             93             SUBB A, CORRECT_ANSWERS_ADDR
+0072 601A             94             JZ CALC_N3
+                      95             
+0074 C3               96             CLR C
+0075 7403             97             MOV A, #3; N4
+0077 9529             98             SUBB A, CORRECT_ANSWERS_ADDR
+0079 6024             99             JZ CALC_N4
+                     100             
+007B C3              101             CLR C
+007C 7404            102             MOV A, #4; finish, password is correct
+007E 9529            103             SUBB A, CORRECT_ANSWERS_ADDR
+0080 603F            104             JZ CORRECT_PASSWORD
+0082                 105     CALC_N2:
+0082 752503          106             MOV N_ADDRESS, #3; new upper bound value for errors number
+0085 85242A          107             MOV N1_ADDRESS, TRIES_COUNT_ADDRESS; num of tries on first iter
+0088 752400          108             MOV TRIES_COUNT_ADDRESS, #00h
+008B 02002D          109             LJMP POLLING_P0_CYCLE
+008E                 110     CALC_N3:
+008E E52A            111         MOV A, N1_ADDRESS
+0090 85242B          112             MOV N2_ADDRESS, TRIES_COUNT_ADDRESS; num of tries on second iter
+0093 252B            113             ADD A, N2_ADDRESS
+0095 5401            114             ANL A, #01h
+0097 F525            115             MOV N_ADDRESS, A; new upper bound value for errors number
+0099 752400          116             MOV TRIES_COUNT_ADDRESS, #00h
+009C 02002D          117         LJMP POLLING_P0_CYCLE
+009F                 118     CALC_N4:
+009F 85242C          119         MOV N3_ADDRESS, TRIES_COUNT_ADDRESS
+00A2 752400          120             MOV TRIES_COUNT_ADDRESS, #00h
+00A5 E52A            121             MOV A, N1_ADDRESS
+00A7 252B            122         ADD A, N2_ADDRESS
+00A9 252C            123             ADD A, N3_ADDRESS
+00AB FA              124             MOV R2, A; save sum of N1,N2,N3
+A51 MACRO ASSEMBLER  EVS4                                                                 11/06/2023 14:02:24 PAGE     3
 
-00AA C9              125             XCH A, R1
-00AB 99              126             SUBB A, R1
-00AC F525            127             MOV N_ADDRESS, A
-00AE 020030          128             LJMP POLLING_P0_CYCLE
-                     129     
-                     130     
-00B1                 131     BLOCK_CYCLE:
-00B1 75C0AA          132             MOV P4, #BLOCK_CODE
-00B4 01B1            133             AJMP BLOCK_CYCLE
-                     134     
-00B6                 135     CORRECT_PASSWORD:
-00B6 759055          136         MOV P1, #SUCCESS_CODE
-00B9 75A002          137             MOV P2, #TASK
-00BC 020000          138             LJMP INIT
-                     139             END
-A51 MACRO ASSEMBLER  EVS4                                                                 11/06/2023 13:14:20 PAGE     4
+00AC 7905            125             MOV R1, #5
+00AE 99              126             SUBB A, R1
+00AF 10D702          127             JBC PSW.7, EXCHANGE
+00B2 F525            128             MOV N_ADDRESS, A
+                     129             
+00B4                 130     EXCHANGE:
+00B4 EA              131         MOV A, R2
+00B5 C9              132             XCH A, R1
+00B6 99              133             SUBB A, R1
+00B7 F525            134             MOV N_ADDRESS, A
+00B9 02002D          135             LJMP POLLING_P0_CYCLE
+                     136     
+                     137     
+00BC                 138     BLOCK_CYCLE:
+00BC 7590AA          139             MOV P1, #BLOCK_CODE
+00BF 01BC            140             AJMP BLOCK_CYCLE
+                     141     
+00C1                 142     CORRECT_PASSWORD:
+00C1 759055          143         MOV P1, #SUCCESS_CODE
+00C4 75A002          144             MOV P2, #TASK
+00C7 020000          145             LJMP INIT
+                     146             END
+A51 MACRO ASSEMBLER  EVS4                                                                 11/06/2023 14:02:24 PAGE     4
 
 SYMBOL TABLE LISTING
 ------ ----- -------
@@ -160,16 +167,16 @@ N A M E                T Y P E  V A L U E   ATTRIBUTES
 
 ACC . . . . . . . . .  D ADDR   00E0H   A   
 BLOCK_CODE. . . . . .  N NUMB   00AAH   A   
-BLOCK_CYCLE . . . . .  C ADDR   00B1H   A   
-CALC_N2 . . . . . . .  C ADDR   0075H   A   
-CALC_N3 . . . . . . .  C ADDR   0081H   A   
-CALC_N4 . . . . . . .  C ADDR   0092H   A   
-CHECK_ERROR . . . . .  C ADDR   0043H   A   
+BLOCK_CYCLE . . . . .  C ADDR   00BCH   A   
+CALC_N2 . . . . . . .  C ADDR   0082H   A   
+CALC_N3 . . . . . . .  C ADDR   008EH   A   
+CALC_N4 . . . . . . .  C ADDR   009FH   A   
+CHECK_ERROR . . . . .  C ADDR   0046H   A   
 CORRECT_ANSWERS_ADDR.  N NUMB   0029H   A   
-CORRECT_PASSWORD. . .  C ADDR   00B6H   A   
+CORRECT_PASSWORD. . .  C ADDR   00C1H   A   
 CURRENT_VAL_ADDRESS .  N NUMB   0026H   A   
-EXCHANGE. . . . . . .  C ADDR   00A7H   A   
-GET_BIT . . . . . . .  C ADDR   0038H   A   
+EXCHANGE. . . . . . .  C ADDR   00B4H   A   
+GET_BIT . . . . . . .  C ADDR   003BH   A   
 INDEX_ADDRESS . . . .  N NUMB   0028H   A   
 INIT. . . . . . . . .  C ADDR   0000H   A   
 N1_ADDRESS. . . . . .  N NUMB   002AH   A   
@@ -181,10 +188,10 @@ P1. . . . . . . . . .  D ADDR   0090H   A
 P2. . . . . . . . . .  D ADDR   00A0H   A   
 P4. . . . . . . . . .  N NUMB   00C0H   A   
 PASSWORD_BASE_ADDRESS  N NUMB   0020H   A   
-POLLING_P0_CYCLE. . .  C ADDR   0030H   A   
+POLLING_P0_CYCLE. . .  C ADDR   002DH   A   
 PREV_VAL_ADDRESS. . .  N NUMB   0027H   A   
-PROCESS_CORRECT_BIT .  C ADDR   005CH   A   
-PROCESS_ERROR_BIT . .  C ADDR   004DH   A   
+PROCESS_CORRECT_BIT .  C ADDR   0062H   A   
+PROCESS_ERROR_BIT . .  C ADDR   0052H   A   
 PSW . . . . . . . . .  D ADDR   00D0H   A   
 SUCCESS_CODE. . . . .  N NUMB   0055H   A   
 TASK. . . . . . . . .  N NUMB   0002H   A   
