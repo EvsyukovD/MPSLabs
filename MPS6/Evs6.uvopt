@@ -133,16 +133,16 @@
         <SetRegEntry>
           <Number>0</Number>
           <Key>DLGDP51</Key>
-          <Name>(98=150,104,483,388,0)(82=-1,-1,-1,-1,0)(83=1036,148,1234,253,0)(84=-1,-1,-1,-1,0)(85=-1,-1,-1,-1,0)(5009=-1,-1,-1,-1,0)(5010=458,211,656,316,0)(80=227,150,421,353,0)(91=957,121,1157,386,1)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=195,153,428,351,0)(5012=347,167,664,326,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=1013,308,1216,441,1)(102=741,203,957,538,1)</Name>
+          <Name>(98=150,104,483,388,0)(82=-1,-1,-1,-1,0)(83=1036,148,1234,253,0)(84=-1,-1,-1,-1,0)(85=-1,-1,-1,-1,0)(5009=-1,-1,-1,-1,0)(5010=458,211,656,316,0)(80=227,150,421,353,0)(91=1040,217,1240,482,1)(92=-1,-1,-1,-1,0)(2006=-1,-1,-1,-1,0)(2007=195,153,428,351,0)(5012=347,167,664,326,0)(3005=-1,-1,-1,-1,0)(5015=-1,-1,-1,-1,0)(103=444,641,647,774,1)(102=778,187,994,522,1)</Name>
         </SetRegEntry>
       </TargetDriverDllRegistry>
       <Breakpoint>
         <Bp>
           <Number>0</Number>
           <Type>0</Type>
-          <LineNumber>83</LineNumber>
+          <LineNumber>135</LineNumber>
           <EnabledFlag>1</EnabledFlag>
-          <Address>-16777137</Address>
+          <Address>-16777069</Address>
           <ByteObject>0</ByteObject>
           <HtxType>0</HtxType>
           <ManyObjects>0</ManyObjects>
@@ -155,38 +155,6 @@
         </Bp>
         <Bp>
           <Number>1</Number>
-          <Type>0</Type>
-          <LineNumber>82</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16777139</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\devsy\Desktop\mps_labs\MPS6\Evs6.a51</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>2</Number>
-          <Type>0</Type>
-          <LineNumber>81</LineNumber>
-          <EnabledFlag>1</EnabledFlag>
-          <Address>-16777141</Address>
-          <ByteObject>0</ByteObject>
-          <HtxType>0</HtxType>
-          <ManyObjects>0</ManyObjects>
-          <SizeOfObject>0</SizeOfObject>
-          <BreakByAccess>0</BreakByAccess>
-          <BreakIfRCount>1</BreakIfRCount>
-          <Filename>C:\Users\devsy\Desktop\mps_labs\MPS6\Evs6.a51</Filename>
-          <ExecCommand></ExecCommand>
-          <Expression></Expression>
-        </Bp>
-        <Bp>
-          <Number>3</Number>
           <Type>2</Type>
           <LineNumber>0</LineNumber>
           <EnabledFlag>1</EnabledFlag>
@@ -202,7 +170,7 @@
           <Expression>\\Evs6\EVS6\PWM0</Expression>
         </Bp>
         <Bp>
-          <Number>4</Number>
+          <Number>2</Number>
           <Type>2</Type>
           <LineNumber>0</LineNumber>
           <EnabledFlag>1</EnabledFlag>
@@ -301,7 +269,7 @@
         <Wi>
           <IntNumber>0</IntNumber>
           <FirstString>pwm0pin</FirstString>
-          <SecondString>000080000000000000000000000000000000F03F0000000000000000000000000000000070776D3070696E000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000001000000000000000000F03F0B00000000000000000000000000000000000000000000FF</SecondString>
+          <SecondString>000080000000000000000000000000000000F03F0000000000000000000000000000000070776D3070696E000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000001000000000000000000F03F1100000000000000000000000000000000000000000000FF</SecondString>
         </Wi>
       </LogicAnalyzers>
     </TargetOption>
