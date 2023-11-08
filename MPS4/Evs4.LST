@@ -1,4 +1,4 @@
-A51 MACRO ASSEMBLER  EVS4                                                                 11/07/2023 15:40:54 PAGE     1
+A51 MACRO ASSEMBLER  EVS4                                                                 11/08/2023 18:30:06 PAGE     1
 
 
 MACRO ASSEMBLER A51 V8.02b
@@ -33,7 +33,7 @@ LOC  OBJ            LINE     SOURCE
 0000 758000           24             MOV P0, #00h
 0003 759000           25             MOV P1, #00h
 0006 75A000           26             MOV P2, #00h
-0009 752700           27             MOV PREV_VAL_ADDRESS, #00h
+0009 858027           27             MOV PREV_VAL_ADDRESS, P0
 000C 752502           28             MOV N_ADDRESS, #2; N1
                       29             ;MOV N1_ADDRESS, N_ADDRESS
 000F 752400           30             MOV TRIES_COUNT_ADDRESS, #00h
@@ -65,7 +65,7 @@ LOC  OBJ            LINE     SOURCE
 0036 6527             56             XRL A, PREV_VAL_ADDRESS
 0038 60F8             57             JZ POLLING_P0_CYCLE; is P0 changed?
 003A 852627           58             MOV PREV_VAL_ADDRESS, CURRENT_VAL_ADDRESS
-A51 MACRO ASSEMBLER  EVS4                                                                 11/07/2023 15:40:54 PAGE     2
+A51 MACRO ASSEMBLER  EVS4                                                                 11/08/2023 18:30:06 PAGE     2
 
 003D 752800           59             MOV INDEX_ADDRESS, #00h
 0040                  60     GET_BIT:; extract bits via right rotate
@@ -133,7 +133,7 @@ LOC  OBJ            LINE     SOURCE
 00A4 85242C          122         MOV N3_ADDRESS, TRIES_COUNT_ADDRESS
 00A7 752400          123             MOV TRIES_COUNT_ADDRESS, #00h
 00AA E52A            124             MOV A, N1_ADDRESS
-A51 MACRO ASSEMBLER  EVS4                                                                 11/07/2023 15:40:54 PAGE     3
+A51 MACRO ASSEMBLER  EVS4                                                                 11/08/2023 18:30:06 PAGE     3
 
 00AC 252B            125         ADD A, N2_ADDRESS
 00AE 252C            126             ADD A, N3_ADDRESS
@@ -161,7 +161,7 @@ LOC  OBJ            LINE     SOURCE
 00CC 75A002          148             MOV P2, #TASK
 00CF 0200C9          149             LJMP CORRECT_PASSWORD
                      150             END
-A51 MACRO ASSEMBLER  EVS4                                                                 11/07/2023 15:40:54 PAGE     4
+A51 MACRO ASSEMBLER  EVS4                                                                 11/08/2023 18:30:06 PAGE     4
 
 SYMBOL TABLE LISTING
 ------ ----- -------
